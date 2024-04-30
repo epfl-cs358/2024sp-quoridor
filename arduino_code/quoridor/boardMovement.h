@@ -1,13 +1,17 @@
 #include <stdint.h>
 
+//https://reprap.org/forum/read.php?219,168722 as stated here
 //TODO PUT CORRECT PINS FOR STEPPER AND SERVOS
-#define StepperXPin1 1
-#define StepperXPin2 1
-#define StepperXPin3 1
+#define StepperXPin1 54
+#define StepperXPin2 55
+#define StepperXPin3 38
 
-#define StepperYPin1 1
-#define StepperYPin2 1
-#define StepperYPin3 1
+#define StepperYPin1 60
+#define StepperYPin2 61
+#define StepperYPin3 56
+
+#define Speed 300
+#define Acceleration 1
 
 #define ServoClawPin 1
 #define ServoRotationPin 1
@@ -35,4 +39,5 @@ void rotateTo(WallOrientation orientation);
 void lowerClaw(PieceType type);
 void raiseClaw(PieceType type);
 
+void debugStartMotors();
 void motorControlLoop();
