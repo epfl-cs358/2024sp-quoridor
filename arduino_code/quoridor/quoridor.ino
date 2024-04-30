@@ -34,8 +34,14 @@ void setupInterrupts(){
 
 void setup() {
   setupMotors();
-  setupInterpreter();
-  //setupInterrupts(); TODO DECOMMENT FOR REAL
+  #ifdef NORMAL_RUN
+   setupInterpreter();
+   //setupInterrupts(); TODO DECOMMENT FOR REAL
+  #endif
+  #ifdef DEBUG
+   debugStartMotors()
+  #endif
+  
 }
 
 void loop() {

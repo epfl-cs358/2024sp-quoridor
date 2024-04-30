@@ -2,14 +2,15 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
 #include "boardMovement.h"
+#include "boardUtils.cpp"
 
 AccelStepper X(
-  AccelStepper::FULL2WIRE, 
+  AccelStepper::DRIVER, 
   StepperXPin1, 
   StepperXPin2
 );
 AccelStepper Y(
-  AccelStepper::FULL2WIRE, 
+  AccelStepper::DRIVER, 
   StepperYPin1, 
   StepperYPin2 
 );
@@ -26,19 +27,28 @@ WallOrientation clawOrientation = HORIZONTAL;
 
 void setupMotors() {
 
-  X.setMaxSpeed(500.0);
+  X.setMaxSpeed(Speed);
+  X.setAcceleration(Acceleration);
   X.setEnablePin(StepperXPin3);
-  Y.setMaxSpeed(500.0);
+  X.setPinsInverted(false, false, true);
+  X.enableOutputs();
+
+  Y.setMaxSpeed(Speed);
+  Y.setAcceleration(Acceleration);
   Y.setEnablePin(StepperYPin3);
+  Y.setPinsInverted(false, false, true);
+  Y.enableOutputs();
+
   XY.addStepper(X);
   XY.addStepper(Y);
 
-  Z_ser.attach(ServoZPin);
-  claw_ser.attach(ServoClawPin);
-  rotation_ser.attach(ServoRotationPin);
+  //TODO ADD LATER
+  //Z_ser.attach(ServoZPin);
+  //claw_ser.attach(ServoClawPin);
+  //rotation_ser.attach(ServoRotationPin);
 
   Serial.begin(9600);
-  delay(10000); 
+  Serial.print("\n START \n");
 }
 
 void forceStopMotors(){
@@ -60,6 +70,18 @@ void goToOrigin(){
 }
 
 void playMove(MoveData move_data){
+
+  //Check for invalid positions
+  if(move_data.old_position % 10 == 9 ||
+     (move_data.old_position > 88 && move_data.piece_type == PLAYER) ||
+     (move_data.old_position > 78 && move_data.piece_type == WALL) ||
+     move_data.new_position % 10 == 9 ||
+     (move_data.new_position > 88 && move_data.piece_type == PLAYER) ||
+     (move_data.new_position > 78 && move_data.piece_type == WALL)
+     ){
+      Serial.println("NOT VALID POSITION");
+      return;}
+
   X.enableOutputs();
   Y.enableOutputs();
 
@@ -88,16 +110,22 @@ void moveToBoardPosition(BoardPosition pos, PieceType type){
   
   long x, y;
   //Translate pos into a x and y coordinate for the motors depending on the piece type
+  long posX = pos % 10;
+  long posY = pos / 10;
   if(type == PLAYER){
-    //TODO//
+    x = getStepXPlayer(posX);
+    y = getStepYPlayer(posY);
   }else{
-    //TODO//
+    x = getStepXWall(posX);
+    y = getStepYWall(posY);
   }
   moveToXY(x, y);
 
-  Serial.print("move to pos: ");
-  Serial.print(pos);
-  Serial.print("\n");
+  Serial.print("move to pos: (");
+  Serial.print(x);
+  Serial.print(",");
+  Serial.print(y);
+  Serial.print(")\n");
 }
 
 void openClaw(){
@@ -109,7 +137,7 @@ void openClaw(){
       delay(16);                      
     }
     */
-  delay(250);
+  delay(1000);
 
   isClawClose = false; 
   
@@ -126,7 +154,7 @@ void closeClaw(){
       delay(16);                      
     }
     */
-  delay(250);
+  delay(1000);
   isClawClose = true; 
 
   Serial.print("close claw \n");
@@ -152,7 +180,7 @@ void rotateTo(WallOrientation orientation){
       }
       */
     }
-    delay(250);
+    delay(1000);
     clawOrientation = orientation; 
 
     Serial.print("rotate to orientation: ");
@@ -170,7 +198,7 @@ void lowerClaw(PieceType type){
       delay(16);                      
     }
     */
-    delay(250);
+    delay(1000);
     isClawHigh = false;
 
     Serial.print("lower the claw \n");
@@ -186,11 +214,16 @@ void raiseClaw(PieceType type){
       delay(16);                      
     }
     */
-    delay(250);
+    delay(1000);
     isClawHigh = true;
 
     Serial.print("raise the claw \n"); 
   }
+}
+
+void debugStartMotors(){
+  X.enableOutputs();
+  Y.enableOutputs();
 }
 
 //For debug only

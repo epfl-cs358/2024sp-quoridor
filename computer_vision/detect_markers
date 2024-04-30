@@ -1,0 +1,111 @@
+import numpy as np
+import cv2
+from cv2 import aruco
+from time import sleep
+from collections import defaultdict
+
+columnsStartID = 3
+
+def compute_intersection(line1, line2):
+    x1, y1 = line1[0]
+    x2, y2 = line1[1]
+    x3, y3 = line2[0]
+    x4, y4 = line2[1]
+
+    denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    if denominator == 0:
+        return None  # Lines are parallel or coincident
+    
+    intersection_x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator
+    intersection_y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator
+    
+    return int(intersection_x), int(intersection_y)
+
+def aruco_display(corners, ids, rejected, image):
+    if len(corners) > 0:
+        ids = ids.flatten()
+
+        centersIDs = {}
+        vertical_lines = []
+        horizontal_lines = []
+
+        for (markerCorner, markerID) in zip(corners, ids):
+            corners = markerCorner.reshape((4, 2))
+            (topLeft, topRight, bottomRight, bottomLeft) = corners
+ 
+            topRight = (int(topRight[0]), int(topRight[1]))
+            bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
+            bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
+            topLeft = (int(topLeft[0]), int(topLeft[1]))
+ 
+            cv2.line(image, topLeft, topRight, (255, 0, 0), 2)
+            cv2.line(image, topRight, bottomRight, (0, 255, 0), 2)
+            cv2.line(image, bottomRight, bottomLeft, (255, 0, 0), 2)
+            cv2.line(image, bottomLeft, topLeft, (0, 255, 0), 2)
+ 
+            cX = int((topLeft[0] + bottomRight[0]) / 2.0)
+            cY = int((topLeft[1] + bottomRight[1]) / 2.0)
+            cv2.circle(image, (cX, cY), 4, (0, 0, 255), -1)
+ 
+            cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (0, 255, 0), 2)
+            print("[Inference] ArUco marker ID: {}".format(markerID))
+
+            if markerID in centersIDs:
+                centersIDs[markerID].append((cX, cY))
+            else:
+                centersIDs[markerID] = [(cX, cY)]
+
+        for markerID, centers in centersIDs.items():
+            if len(centers) == 2:
+                line = (centers[0], centers[1])
+                cv2.line(image, line[0], line[1], (0, 0, 255), 2)
+                if (markerID < columnsStartID):
+                    horizontal_lines.append(line)
+                else:
+                    vertical_lines.append(line)
+                print("appended line: ", line)
+
+        if (len(horizontal_lines) >= 1 & len(vertical_lines) >= 1):
+            for h_line in horizontal_lines:
+                for v_line in vertical_lines:
+                    x, y = compute_intersection(h_line, v_line)
+                    cv2.circle(image, (x, y), 5, (255, 255, 0), -1)
+        
+    return image
+
+def show_camera(index):
+    cap = cv2.VideoCapture(index)
+	# Set capture format to 'MJPG'
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m','j','p','g'))
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print(f"Camera {index} is not available")
+            print(ret)
+            break
+
+        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+        aruco_param = aruco.DetectorParameters()
+        detector = aruco.ArucoDetector(aruco_dict, aruco_param)
+
+        (corners, ids, rejected) = detector.detectMarkers(frame)
+        print(corners)
+        detected_markers = aruco_display(corners, ids, rejected, frame)
+
+        cv2.imshow("Camera", detected_markers)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+def main():
+    
+    while True:
+        show_camera(0)
+        sleep(1)
+
+if __name__ == "__main__":
+    main()

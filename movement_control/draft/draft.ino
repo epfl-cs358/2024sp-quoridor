@@ -1,14 +1,14 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
 // Voor de Arduino Uno + CNC shield V3
-#define MOTOR_X_ENABLE_PIN 8
-#define MOTOR_X_STEP_PIN 2
-#define MOTOR_X_DIR_PIN 5
+#define MOTOR_X_ENABLE_PIN 38
+#define MOTOR_X_STEP_PIN 54
+#define MOTOR_X_DIR_PIN 55
 
 
-#define MOTOR_Y_ENABLE_PIN 8
-#define MOTOR_Y_STEP_PIN 3
-#define MOTOR_Y_DIR_PIN 6
+#define MOTOR_Y_ENABLE_PIN 56
+#define MOTOR_Y_STEP_PIN 60
+#define MOTOR_Y_DIR_PIN 61
 #define SPEED 200
 #define ACCELERATION 1
 #define SIZE 400
