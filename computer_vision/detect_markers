@@ -1,0 +1,69 @@
+import numpy as np
+import cv2, PIL
+from cv2 import aruco
+from time import sleep
+
+def aruco_display(corners, ids, rejected, image):
+    if len(corners) > 0:
+        ids = ids.flatten()
+
+        for (markerCorner, markerID) in zip(corners, ids):
+            corners = markerCorner.reshape((4, 2))
+            (topLeft, topRight, bottomRight, bottomLeft) = corners
+ 
+            topRight = (int(topRight[0]), int(topRight[1]))
+            bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
+            bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
+            topLeft = (int(topLeft[0]), int(topLeft[1]))
+ 
+            cv2.line(image, topLeft, topRight, (255, 0, 0), 2)
+            cv2.line(image, topRight, bottomRight, (0, 255, 0), 2)
+            cv2.line(image, bottomRight, bottomLeft, (0, 0, 255), 2)
+            cv2.line(image, bottomLeft, topLeft, (0, 255, 0), 2)
+ 
+            cX = int((topLeft[0] + bottomRight[0]) / 2.0)
+            cY = int((topLeft[1] + bottomRight[1]) / 2.0)
+            cv2.circle(image, (cX, cY), 4, (0, 0, 255), -1)
+ 
+            cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (0, 255, 0), 2)
+            print("[Inference] ArUco marker ID: {}".format(markerID))
+        
+    return image
+
+def show_camera(index):
+    cap = cv2.VideoCapture(index)
+	# Set capture format to 'MJPG'
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m','j','p','g'))
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print(f"Camera {index} is not available")
+            print(ret)
+            break
+
+        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+        aruco_param = aruco.DetectorParameters()
+        detector = aruco.ArucoDetector(aruco_dict, aruco_param)
+
+        (corners, ids, rejected) = detector.detectMarkers(frame)
+        print(corners)
+        detected_markers = aruco_display(corners, ids, rejected, frame)
+
+        cv2.imshow("Camera", detected_markers)
+        print(f"Camera {index} is available")
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+def main():
+    
+    while True:
+        show_camera(0)
+        sleep(1)
+
+if __name__ == "__main__":
+    main()
