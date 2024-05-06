@@ -34,6 +34,8 @@ void setupInterrupts(){
 
 void setup() {
   setupMotors();
+  // Calibration sequence
+  calibrateMotors();
   #ifdef NORMAL_RUN
    setupInterpreter();
    //setupInterrupts(); TODO DECOMMENT FOR REAL
@@ -41,9 +43,6 @@ void setup() {
   #ifdef DEBUG
    debugStartMotors()
   #endif
-
-  // Calibration sequence
-  calibrateMotors();
 }
 
 

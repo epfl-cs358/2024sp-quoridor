@@ -11,12 +11,12 @@
 #define StepperYPin3 56
 
 #define Speed 300
-#define Acceleration 1
+#define Acceleration 9000
 
 #define XMinStopPin 3
 #define YMinStopPin 14
-#define CALIBRATION_SPEED 10
-#define CALIBRATION_DELAY 10
+#define CALIBRATION_SPEED 1400
+#define CALIBRATION_DELAY 0
 
 #define ServoClawPin 1
 #define ServoRotationPin 1
@@ -46,3 +46,4 @@ void raiseClaw(PieceType type);
 
 void debugStartMotors();
 void motorControlLoop();
+void calibrateMotors();
