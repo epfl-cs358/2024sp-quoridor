@@ -49,6 +49,8 @@ void setupMotors() {
 
   Serial.begin(9600);
   Serial.print("\n START \n");
+
+  delay(3000);
 }
 
 void forceStopMotors(){
@@ -250,15 +252,13 @@ void calibrateMotors() {
   Y.enableOutputs();
 
   while (!digitalRead(XMinStopPin)) {
-    X.move(10);
+    X.move(CALIBRATION_STEP);
     X.run();
-    delay(CALIBRATION_DELAY);
   }
 
   while (!digitalRead(YMinStopPin)) {
-    Y.move(-10);
+    Y.move(-CALIBRATION_STEP);
     Y.run();
-    delay(CALIBRATION_DELAY);
   }
 
   X.setSpeed(Speed);
