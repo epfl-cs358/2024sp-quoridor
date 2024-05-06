@@ -243,3 +243,24 @@ void motorControlLoop(){
   }
   XY.runSpeedToPosition();
 }
+
+void calibrateMotors() {
+
+  while (!digitalRead(XStopPin)) {
+    X.setSpeed(CALIBRATION_SPEED);
+    X.runSpeedToPosition();
+    delay(CALIBRATION_DELAY);
+  }
+
+  // Move Y axis slowly until it reaches the end
+  while (!digitalRead(YStopPin)) {
+    Y.setSpeed(CALIBRATION_SPEED);
+    Y.runSpeedToPosition();
+    delay(CALIBRATION_DELAY);
+  }
+
+  X.setSpeed(Speed);
+  Y.setSpeed(Speed);
+
+  forceStopMotors();
+}

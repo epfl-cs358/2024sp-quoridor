@@ -6,8 +6,8 @@
 //#define DEBUG_MOVE 1
 
 //USE THESE PINS FOR INTERUPT MANAGEMENT
-#define NextMovePin 2
-#define StopPin 3
+#define NextMovePin 19
+#define StopPin 18
 
 //bool isWaitingForResponse = false; TODO SWAP FOR REAL
 bool isWaitingForResponse = true;
@@ -41,8 +41,11 @@ void setup() {
   #ifdef DEBUG
    debugStartMotors()
   #endif
-  
+
+  // Calibration sequence
+  calibrateMotors();
 }
+
 
 void loop() {
   #ifdef DEBUG_MOVE 

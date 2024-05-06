@@ -13,6 +13,11 @@
 #define Speed 300
 #define Acceleration 1
 
+#define XMinStopPin 3
+#define YMinStopPin 14
+#define CALIBRATION_SPEED 10
+#define CALIBRATION_DELAY 10
+
 #define ServoClawPin 1
 #define ServoRotationPin 1
 #define ServoZPin 1
