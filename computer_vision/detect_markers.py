@@ -104,6 +104,15 @@ def aruco_display(corners, ids, rejected, image):
     ## return the frame with newly displayed information and the array of intersection coordinates
     return image, intersections
 
+def detect_markers(frame):
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+    aruco_param = aruco.DetectorParameters()
+    detector = aruco.ArucoDetector(aruco_dict, aruco_param)
+
+    (corners, ids, rejected) = detector.detectMarkers(frame)
+    detected_markers, intersections = aruco_display(corners, ids, rejected, frame)
+    return detected_markers, intersections
+
 def show_camera(index):
     cap = cv2.VideoCapture(index)
 	# Set capture format to 'MJPG'
@@ -128,6 +137,7 @@ def show_camera(index):
             break
     cap.release()
     cv2.destroyAllWindows()
+
 
 
 def main():
