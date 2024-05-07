@@ -27,13 +27,13 @@ WallOrientation clawOrientation = HORIZONTAL;
 
 void setupMotors() {
 
-  X.setMaxSpeed(Speed);
+  X.setMaxSpeed(CALIBRATION_SPEED);
   X.setAcceleration(Acceleration);
   X.setEnablePin(StepperXPin3);
   X.setPinsInverted(false, false, true);
   X.enableOutputs();
 
-  Y.setMaxSpeed(Speed);
+  Y.setMaxSpeed(CALIBRATION_SPEED);
   Y.setAcceleration(Acceleration);
   Y.setEnablePin(StepperYPin3);
   Y.setPinsInverted(false, false, true);
@@ -49,6 +49,8 @@ void setupMotors() {
 
   Serial.begin(9600);
   Serial.print("\n START \n");
+
+  delay(3000);
 }
 
 void forceStopMotors(){
@@ -242,4 +244,28 @@ void motorControlLoop(){
     XY.moveTo(pos_xy);
   }
   XY.runSpeedToPosition();
+}
+
+void calibrateMotors() {
+
+  X.enableOutputs();
+  Y.enableOutputs();
+
+  while (!digitalRead(XMinStopPin)) {
+    X.move(CALIBRATION_STEP);
+    X.run();
+  }
+
+  while (!digitalRead(YMinStopPin)) {
+    Y.move(-CALIBRATION_STEP);
+    Y.run();
+  }
+
+  X.setSpeed(Speed);
+  Y.setSpeed(Speed);
+
+  X.setCurrentPosition(0);
+  Y.setCurrentPosition(0);
+
+  forceStopMotors();
 }
