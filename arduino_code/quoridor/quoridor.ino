@@ -28,8 +28,8 @@ void setupInterrupts(){
   pinMode(StopPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(StopPin), stopISR, RISING);
 
-  pinMode(NextMovePin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(NextMovePin), nextMoveISR, RISING);
+  //pinMode(NextMovePin, INPUT_PULLUP);
+  //attachInterrupt(digitalPinToInterrupt(NextMovePin), nextMoveISR, RISING);
 }
 
 void setup() {
@@ -38,7 +38,7 @@ void setup() {
   calibrateMotors();
   #ifdef NORMAL_RUN
    setupInterpreter();
-   //setupInterrupts(); TODO DECOMMENT FOR REAL
+   setupInterrupts(); 
   #endif
   #ifdef DEBUG
    debugStartMotors()

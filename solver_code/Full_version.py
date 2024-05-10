@@ -1,0 +1,180 @@
+# ==== DON'T CHANGE AFTER THIS LINE ====
+from collections import deque
+
+def greedy_quoridor_solver(bot_node, player_node, board_walls):
+    edges = {}
+    free_walls = []
+    
+    def printGraph(g_edges):
+        for y in range(0, 9):
+            for x in range(0, 9):
+                print(convertToId(x,y), ":", g_edges[convertToId(x, y)])
+
+    def copyGraph(g_edges):
+        new_edges = {}
+        for x in range (0, 9):
+            for y in range(0, 9):
+                edges_for_node = {"right":[], "left":[], "up":[], "down":[]}
+                if(g_edges[convertToId(x,y)]["left"] != []):
+                    edges_for_node["left"] = g_edges[convertToId(x,y)]["left"]
+                if(g_edges[convertToId(x,y)]["right"] != []):
+                    edges_for_node["right"] = g_edges[convertToId(x,y)]["right"]
+                if(g_edges[convertToId(x,y)]["up"] != []):
+                    edges_for_node["up"] = g_edges[convertToId(x,y)]["up"]  
+                if(g_edges[convertToId(x,y)]["down"] != []):
+                    edges_for_node["down"] = g_edges[convertToId(x,y)]["down"] 
+                new_edges[convertToId(x, y)] = edges_for_node
+        return new_edges       
+
+    def convertToId(x, y):
+        return y * 10 + x 
+
+    def canWallBePlaced(g_edges, wall):
+        if(0 <=(wall[0] % 10) <= 7 and 0 <= (wall[0] // 10) <= 7):
+            if(wall[1] == "HORIZONTAL" and 
+               g_edges[wall[0]]["up"] != [] and 
+               g_edges[wall[0] + 1]["up"] != [] and 
+               g_edges[wall[0] + 10]["down"] != [] and 
+               g_edges[wall[0] + 11]["down"] != []):
+                return True
+            elif(wall[1] == "VERTICAL" and 
+                 g_edges[wall[0]]["right"] != [] and 
+                 g_edges[wall[0] + 1]["left"] != [] and 
+                 g_edges[wall[0] + 10]["right"] != [] and 
+                 g_edges[wall[0] + 11]["left"] != []):
+                return True
+        return False    
+
+    def addWall(g_edges, wall):
+        if(wall[1] == "HORIZONTAL"):
+            g_edges[wall[0]]["up"] = []
+            g_edges[wall[0] + 1]["up"] = []
+            g_edges[wall[0] + 10]["down"] = []            
+            g_edges[wall[0] + 11]["down"] = []
+        else: 
+            g_edges[wall[0]]["right"] = []
+            g_edges[wall[0] + 1]["left"] = []
+            g_edges[wall[0] + 10]["right"] = []
+            g_edges[wall[0] + 11]["left"] = []    
+
+    def initGraph(walls):
+        for x in range (0, 9):
+            for y in range(0, 9):
+                edges_for_node = {"right":[], "left":[], "up":[], "down":[]}
+                if(x != 0):
+                    edges_for_node["left"] = convertToId(x-1, y)
+                if(x != 8):
+                    edges_for_node["right"] = convertToId(x+1, y)
+                if(y != 8):
+                    edges_for_node["up"] = convertToId(x, y+1)    
+                if(y != 0):
+                    edges_for_node["down"] = convertToId(x, y-1)  
+                edges[convertToId(x, y)] = edges_for_node
+        for wall in walls:
+            if(wall[0] % 10 == 8):
+                free_walls.append(wall)
+            else:
+                addWall(edges, wall)
+
+    def win_for_bot(node):
+        return node // 10 == 8
+
+    def win_for_player(node):
+        return node // 10 == 0
+
+
+    def shortest_path_to_win(start_node, g_edges, win_condition):
+        visited_nodes = set()
+        queue = deque([(start_node, [start_node])])
+
+        while queue:
+            node, path = queue.popleft()
+            if win_condition(node):
+                return path
+            visited_nodes.add(node)
+            neighbors = [
+                g_edges[node]["right"],
+                g_edges[node]["left"],
+                g_edges[node]["up"],
+                g_edges[node]["down"]]
+            for neighbor in neighbors:
+                if(neighbor != [] and neighbor not in visited_nodes):
+                     queue.append((neighbor, path + [neighbor]))
+        return None
+
+    initGraph(board_walls)
+
+    bot_path = shortest_path_to_win(bot_node, edges, win_for_bot)
+    player_path = shortest_path_to_win(player_node, edges, win_for_player)
+
+    if(len(bot_path) <= len(player_path) or free_walls == []):
+        return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[1])
+    else:
+        best_winning_move = (free_walls[0], bot_path, player_path)
+        best_losing_move = (free_walls[0], bot_path, player_path)
+        for i in range(len(player_path) - 1):
+            cur_node = player_path[i]
+            next_node = player_path[i+1]
+            walls = []
+            if(edges[cur_node]["right"] == next_node):
+                wall = (cur_node, "VERTICAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+
+                wall = (cur_node - 10, "VERTICAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+            elif(edges[cur_node]["left"] == next_node):
+                wall = (next_node, "VERTICAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+
+                wall = (next_node - 10, "VERTICAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+
+            elif(edges[cur_node]["up"] == next_node):
+                wall = (cur_node, "HORIZONTAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+
+                wall = (cur_node - 1, "HORIZONTAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+
+            elif(edges[cur_node]["down"] == next_node):
+                wall = (next_node, "HORIZONTAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+
+                wall = (next_node - 1, "HORIZONTAL")
+                if(canWallBePlaced(edges, wall)):
+                    walls.append(wall)
+            for wall in walls:
+                new_edges = copyGraph(edges)
+                addWall(new_edges, wall)
+
+                new_bot_path = shortest_path_to_win(bot_node, new_edges, win_for_bot)
+                new_player_path = shortest_path_to_win(player_node, new_edges, win_for_player)
+
+                if(new_bot_path != None and new_player_path != None):
+                    if(len(new_bot_path) <= len(new_player_path) and 
+                       len(new_player_path) - len(new_bot_path) > len(best_winning_move[2]) - len(best_winning_move[1])):
+                        best_winning_move = (wall, new_bot_path, new_player_path)
+                    elif(len(new_bot_path) > len(new_player_path) and
+                        len(new_bot_path) - len(new_player_path) <  len(best_losing_move[1]) - len(best_losing_move[2])):
+                        best_losing_move = (wall, new_bot_path, new_player_path)
+
+        if(best_winning_move != (free_walls[0], bot_path, player_path)):
+            return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_winning_move[0][0], free_walls[0][1], best_winning_move[0][1])
+        else:
+            return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_losing_move[0][0], free_walls[0][1], best_losing_move[0][1])
+                
+# ==== DON'T CHANGE BEFORE THIS LINE ==== 
+
+# ==== MANAGING OF BOARD STATE ====
+bot_node = 1
+player_node = 85
+board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL"), (8, "HORIZONTAL")]  
+final_move = greedy_quoridor_solver(bot_node, player_node, board_walls)
+print(final_move)
