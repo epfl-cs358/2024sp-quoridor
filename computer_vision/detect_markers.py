@@ -4,9 +4,6 @@ from cv2 import aruco
 from time import sleep
 from collections import defaultdict
 
-columnsStartID = 3
-rows = 3
-columns = 3
 
 ## takes coordinates of two perpendicular lines and compute the intersection
 ## returns the coordinates of the intersection
@@ -27,10 +24,10 @@ def compute_intersection(line1, line2):
 
 ## computes the elements to be displayed and display them
 ## arguments are the four corners of each marker, their IDs and the current frame (image)
-def aruco_display(corners, ids, rejected, image):
+def aruco_display(corners, ids, rejected, image, side_length):
 
     ## create the variable to store all the intersections coordinates
-    intersections = np.empty((rows*2, columns*2, 2), dtype=int)
+    intersections = []
 
     if len(corners) > 0:
         ids = ids.flatten()
@@ -66,13 +63,13 @@ def aruco_display(corners, ids, rejected, image):
             ## populates the centersIDs variable
             if markerID in centersIDs:
                 ## when the marker belongs to a row, link top and bottom
-                if markerID < columnsStartID :
+                if markerID < side_length :
                     centersIDs[markerID].append((bottomRight, topRight))
                 ## else link left and right
                 else :
                     centersIDs[markerID].append((bottomLeft, bottomRight))
             else:
-                if markerID < columnsStartID:
+                if markerID < side_length:
                     centersIDs[markerID] = [(bottomRight, topRight)]
                 else:
                     centersIDs[markerID] = [(bottomLeft, bottomRight)]
@@ -85,32 +82,33 @@ def aruco_display(corners, ids, rejected, image):
                 cv2.line(image, line1[0], line1[1], (0, 0, 255), 2)
                 cv2.line(image, line2[0], line2[1], (0, 0, 255), 2)
                 ## each line is added in either the list of horizontal or vertical lines
-                if (markerID < columnsStartID):
-                    horizontal_lines.append(line1)
-                    horizontal_lines.append(line2)
+                if (markerID < side_length):
+                    horizontal_lines.append((line1, markerID))
+                    horizontal_lines.append((line2, markerID))
                 else:
-                    vertical_lines.append(line1)
-                    vertical_lines.append(line2)
+                    vertical_lines.append((line1, int(markerID)-side_length))
+                    vertical_lines.append((line2, int(markerID)-side_length))
 
         ## if at least two perpendicular lines have been drawn, compute their intersection                
         if (len(horizontal_lines) >= 1 and len(vertical_lines) >= 1):
-            for h_index, h_line in enumerate(horizontal_lines):
-                for v_index, v_line in enumerate(vertical_lines):
-                    x, y = compute_intersection(h_line, v_line)
+            for h_line in horizontal_lines:
+                for v_line in vertical_lines:
+                    x, y = compute_intersection(h_line[0], v_line[0])
                     cv2.circle(image, (x, y), 5, (255, 255, 0), -1)
                     ## add the computed intersection in the array to be returned
-                    intersections[v_index][h_index] = (x,y)
+                    intersections.append((x,y, v_line[1], h_line[1]))
+                    some = markerID
                     
     ## return the frame with newly displayed information and the array of intersection coordinates
     return image, intersections
 
-def detect_markers(frame):
+def detect_markers(frame, side_length):
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
     aruco_param = aruco.DetectorParameters()
     detector = aruco.ArucoDetector(aruco_dict, aruco_param)
 
     (corners, ids, rejected) = detector.detectMarkers(frame)
-    detected_markers, intersections = aruco_display(corners, ids, rejected, frame)
+    detected_markers, intersections = aruco_display(corners, ids, rejected, frame, side_length)
     return detected_markers, intersections
 
 def show_camera(index):
@@ -129,7 +127,7 @@ def show_camera(index):
         detector = aruco.ArucoDetector(aruco_dict, aruco_param)
 
         (corners, ids, rejected) = detector.detectMarkers(frame)
-        detected_markers, intersections = aruco_display(corners, ids, rejected, frame)
+        detected_markers, intersections = aruco_display(corners, ids, rejected, frame, 3)
 
         cv2.imshow("Camera", detected_markers)
 

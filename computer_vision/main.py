@@ -5,10 +5,11 @@ import detect_markers as dm
 
 from util import get_limits
 
+SIDE_LENGTH = 3
 
 color = [99, 56, 44]  # Color in BGR colorspace
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 # Set capture format to 'MJPG'
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
 
@@ -29,11 +30,11 @@ while True:
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
     # Find the aruco markers and build the grid
-    detected_markers, intersections = dm.detect_markers(frame)
+    detected_markers, intersections = dm.detect_markers(frame, SIDE_LENGTH)
 
-    print('------------------')
-    print(intersections.shape)
-    print(intersections[0])
+    if len(intersections) >= 1:
+        print('------------------')
+        print(intersections[0])
 
     # Find contours
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -60,18 +61,29 @@ while True:
         if M['m00'] != 0:
             cx = int(M['m10'] / M['m00'])
             cy = int(M['m01'] / M['m00'])
-            grid_x = cx // 100
-            grid_y = cy // 100
 
+            cell = None
 
+            for i in range(0, len(intersections)-SIDE_LENGTH*2-1):
+                print("index is ", i)
+                top_left = intersections[i+0]
+                top_right = intersections[i+1]
+                bottom_left = intersections[i+SIDE_LENGTH*2]
+                bottom_right = intersections[i+1+SIDE_LENGTH*2]
+                print("corners are: ", top_left[0], " ", top_left[1], ", ",  top_right[0], " ", top_right[1], ", ", bottom_left[0], " ", bottom_left[1], ", ", bottom_right[0], " ", bottom_right[1])
+                print (" and object center is ", cx, " ", cy)
+                if top_left[0] <= cx and top_left[1] >= cy and top_right[0] >= cx and top_right[1] >= cy and bottom_left[0] <= cx and bottom_left[1] <= cy and bottom_right[0] >= cx and bottom_right[1] <= cy:
+                    print("x marks the spot")
+                    cell = top_left[2],top_left[3]
+
+            if cell is not None:               
+                print(f"Contour centroid belongs to cell ({cell[0]}, {cell[1]})")
             
-            print(f"Contour centroid belongs to grid ({grid_x}, {grid_y})")
-
-            # Display the grid of the centroid on the frame
-            cv2.putText(frame, f"({grid_x}, {grid_y})", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-            # Optional: Draw centroid on the frame
-            cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+                # Display the grid of the centroid on the frame
+                cv2.putText(frame, f"({cell[0]}, {cell[1]})", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                
+                # Optional: Draw centroid on the frame
+                cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
 
     cv2.imshow('frame', frame)
     # cv2.imshow('mask', mask)  # Optionally display the mask
