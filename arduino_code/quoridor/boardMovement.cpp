@@ -48,7 +48,7 @@ void setupMotors() {
   //rotation_ser.attach(ServoRotationPin);
 
   Serial.begin(9600);
-  Serial.print("\n START \n");
+  //Serial.print("\n START \n");
 
   delay(3000);
 }
@@ -122,12 +122,13 @@ void moveToBoardPosition(BoardPosition pos, PieceType type){
     y = getStepYWall(posY);
   }
   moveToXY(x, y);
-
+  /*
   Serial.print("move to pos: (");
   Serial.print(x);
   Serial.print(",");
   Serial.print(y);
   Serial.print(")\n");
+  */
 }
 
 void openClaw(){
@@ -143,7 +144,7 @@ void openClaw(){
 
   isClawClose = false; 
   
-  Serial.print("open claw \n");
+  //Serial.print("open claw \n");
   }
 }
 
@@ -159,7 +160,7 @@ void closeClaw(){
   delay(1000);
   isClawClose = true; 
 
-  Serial.print("close claw \n");
+  //Serial.print("close claw \n");
   }
 }
 
@@ -184,10 +185,10 @@ void rotateTo(WallOrientation orientation){
     }
     delay(1000);
     clawOrientation = orientation; 
-
+    /*
     Serial.print("rotate to orientation: ");
     Serial.print(orientation == HORIZONTAL ? "HORIZONTAL" : "VERTICAL");
-    Serial.print("\n");
+    Serial.print("\n");*/
   }
 }
 
@@ -203,7 +204,7 @@ void lowerClaw(PieceType type){
     delay(1000);
     isClawHigh = false;
 
-    Serial.print("lower the claw \n");
+    //Serial.print("lower the claw \n");
   }
 }
 
@@ -219,7 +220,7 @@ void raiseClaw(PieceType type){
     delay(1000);
     isClawHigh = true;
 
-    Serial.print("raise the claw \n"); 
+    //Serial.print("raise the claw \n"); 
   }
 }
 

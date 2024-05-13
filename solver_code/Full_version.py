@@ -1,7 +1,7 @@
 # ==== DON'T CHANGE AFTER THIS LINE ====
 from collections import deque
 
-def greedy_quoridor_solver(bot_node, player_node, board_walls):
+def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
     edges = {}
     free_walls = []
     
@@ -106,6 +106,10 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls):
 
     bot_path = shortest_path_to_win(bot_node, edges, win_for_bot)
     player_path = shortest_path_to_win(player_node, edges, win_for_player)
+    
+    if(debug):
+        print(bot_path)
+        print(player_path)
 
     if(len(bot_path) <= len(player_path) or free_walls == []):
         return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[1])
@@ -165,16 +169,40 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls):
                         len(new_bot_path) - len(new_player_path) <  len(best_losing_move[1]) - len(best_losing_move[2])):
                         best_losing_move = (wall, new_bot_path, new_player_path)
 
+        if(debug):
+            print(best_winning_move)
+            print(best_losing_move) 
+                        
         if(best_winning_move != (free_walls[0], bot_path, player_path)):
             return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_winning_move[0][0], free_walls[0][1], best_winning_move[0][1])
         else:
-            return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_losing_move[0][0], free_walls[0][1], best_losing_move[0][1])
-                
+            return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_losing_move[0][0], free_walls[0][1], best_losing_move[0][1])       
 # ==== DON'T CHANGE BEFORE THIS LINE ==== 
 
-# ==== MANAGING OF BOARD STATE ====
-bot_node = 1
-player_node = 85
-board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL"), (8, "HORIZONTAL")]  
-final_move = greedy_quoridor_solver(bot_node, player_node, board_walls)
-print(final_move)
+# ==== COMMUNICATION ====
+import serial
+import time
+ser = serial.Serial()
+ser.baudrate = 9600
+ser.port = 'COM9'
+ser.open()
+
+time.sleep(5)
+
+while True:
+    #serialRead = ser.readline()
+    print("waiting")
+    time.sleep(5)
+    # if(serialRead == "Get next move".encode()):
+    #     print("got signal")
+    #     time.sleep(5)
+
+    #     # # ==== MANAGING OF BOARD STATE ====
+    #     bot_node = 4
+    #     player_node = 84        
+    #     board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
+    #     next_move = greedy_quoridor_solver(bot_node, player_node, board_walls, True)
+
+    #     ser.write(next_move.encode())
+
+    #     time.sleep(10)
