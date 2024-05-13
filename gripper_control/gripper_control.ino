@@ -36,9 +36,9 @@ int gripperWall = 157;
 int gripperPawn = 160;
 
 void setup() {
-  linearServo.attach(9);
-  rotationServo.attach(10);
-  gripperServo.attach(11);
+  linearServo.attach(11);
+  rotationServo.attach(5);
+  gripperServo.attach(6);
 
   //linearServo.write(linearPos);
   //rotationServo.write(90);
