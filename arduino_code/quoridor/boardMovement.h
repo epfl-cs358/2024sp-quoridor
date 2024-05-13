@@ -39,7 +39,7 @@ void forceStopMotors();
 void playMove(MoveData move_data);
 void moveToBoardPosition(BoardPosition pos, PieceType type);
 void openClaw();
-void closeClaw();
+void closeClaw(PieceType type);
 void rotateTo(WallOrientation orientation);
 void lowerClaw(PieceType type);
 void raiseClaw(PieceType type);

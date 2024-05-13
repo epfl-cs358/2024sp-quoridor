@@ -17,13 +17,123 @@ AccelStepper Y(
 MultiStepper XY;
 long pos_xy[2] = {0,0};
 
-Servo claw_ser;
-Servo rotation_ser;
-Servo Z_ser;
-
 bool isClawHigh = true;
-bool isClawClose = true;
+bool isClawClose = false;
 WallOrientation clawOrientation = HORIZONTAL;
+
+//range servo black : 270°
+//range command : 0-180°
+// 0°   = 0°
+// 90°  = 65°
+// 180° = 125°
+
+
+Servo linearServo;
+Servo rotationServo;
+Servo gripperServo;
+
+int linearPos = 0;
+int rotationPos = 0;
+int gripperPos = 0;
+
+//Speed
+int linearSpeed = 10;
+int rotationSpeed = 10;
+int gripperSpeed = 10;
+
+//Starting position
+int linearStart = 90;
+int rotationStart = 0;
+
+
+//End position
+int linearEnd = 0;
+int rotationEnd = 125;
+
+//gripper position
+int gripperOpen = 130;
+int gripperClose = 180;
+int gripperWall = 168;
+int gripperPawn = 165;
+
+void down(){
+  for (linearPos; linearPos >= linearEnd; linearPos -= 1) {
+    linearServo.write(linearPos);
+    delay(linearSpeed);
+  }
+  delay(100);
+}
+
+void up(){
+    for (linearPos; linearPos <= linearStart; linearPos += 1) {
+    linearServo.write(linearPos);
+    delay(linearSpeed);
+  }
+  delay(100);
+}
+
+void rotate(int angle){
+  if(angle > rotationPos){
+    for (rotationPos; rotationPos <= angle; rotationPos += 1) {
+      rotationServo.write(rotationPos);
+      delay(rotationSpeed);
+    }
+  }else{
+    for (rotationPos; rotationPos >= angle; rotationPos -= 1) {
+      rotationServo.write(rotationPos);
+      delay(rotationSpeed);
+    }
+  }
+  delay(100);
+}
+
+void grabWall(){
+    for (gripperPos; gripperPos <= gripperWall; gripperPos += 1) {
+    gripperServo.write(gripperPos);
+    delay(gripperSpeed);
+  }
+  delay(100);
+}
+
+void grabPawn(){
+    for (gripperPos; gripperPos <= gripperPawn; gripperPos += 1) {
+    gripperServo.write(gripperPos);
+    delay(gripperSpeed);
+  }
+  delay(100);
+}
+
+void release(){
+  for (gripperPos; gripperPos >= gripperOpen; gripperPos -= 1) {
+    gripperServo.write(gripperPos);
+    delay(gripperSpeed);
+  }
+  delay(100);
+}
+
+void setupGrabber() {
+  gripperServo.write(gripperClose);
+  delay(100);
+  gripperPos = gripperClose;
+
+  linearServo.write(linearStart);
+  linearPos = linearStart;
+  delay(100);
+  rotationServo.write(0);
+  rotationPos = 0;
+  delay(100);
+
+  linearServo.attach(11);
+  rotationServo.attach(5);
+  gripperServo.attach(6);
+
+  //Set the gripper to the right starting position
+  release();
+  up();
+  rotate(0);
+
+  delay(1000);
+}
 
 void setupMotors() {
 
@@ -43,12 +153,10 @@ void setupMotors() {
   XY.addStepper(Y);
 
   //TODO ADD LATER
-  //Z_ser.attach(ServoZPin);
-  //claw_ser.attach(ServoClawPin);
-  //rotation_ser.attach(ServoRotationPin);
+  setupGrabber();
 
   Serial.begin(9600);
-  //Serial.print("\n START \n");
+  Serial.print("\n START \n");
 
   delay(3000);
 }
@@ -89,9 +197,8 @@ void playMove(MoveData move_data){
 
   moveToBoardPosition(move_data.old_position, move_data.piece_type);
   rotateTo(move_data.old_orientation);
-  openClaw();
   lowerClaw(move_data.piece_type);
-  closeClaw();
+  closeClaw(move_data.piece_type);
   raiseClaw(move_data.piece_type);
 
   moveToBoardPosition(move_data.new_position, move_data.piece_type);
@@ -99,7 +206,6 @@ void playMove(MoveData move_data){
   lowerClaw(move_data.piece_type);
   openClaw();
   raiseClaw(move_data.piece_type);
-  closeClaw();
 
   rotateTo(HORIZONTAL);
   goToOrigin();
@@ -122,105 +228,48 @@ void moveToBoardPosition(BoardPosition pos, PieceType type){
     y = getStepYWall(posY);
   }
   moveToXY(x, y);
-  /*
-  Serial.print("move to pos: (");
-  Serial.print(x);
-  Serial.print(",");
-  Serial.print(y);
-  Serial.print(")\n");
-  */
 }
 
 void openClaw(){
   if(isClawClose){
-    /*
-    TODO NEED TO FIND PARAMETERS
-    for (int pos = Min; pos < Max; pos += 1) { 
-      claw_ser.write(pos);           
-      delay(16);                      
-    }
-    */
-  delay(1000);
-
-  isClawClose = false; 
-  
-  //Serial.print("open claw \n");
+    release();
+    isClawClose = false; 
   }
 }
 
-void closeClaw(){
+void closeClaw(PieceType type){
   if(!isClawClose){
-    /*
-    TODO NEED TO FIND PARAMETERS
-    for (int pos = Max; pos > Min; pos -= 1) { 
-      claw_ser.write(pos);           
-      delay(16);                      
-    }
-    */
-  delay(1000);
+    if(type == PLAYER){
+      grabPawn();
+    }else{
+      grabWall();
+    } 
   isClawClose = true; 
-
-  //Serial.print("close claw \n");
   }
 }
 
 void rotateTo(WallOrientation orientation){
   if(clawOrientation != orientation){
     if(orientation == HORIZONTAL){
-     /*
-      TODO NEED TO FIND PARAMETERS
-      for (int pos = Max; pos > Min; pos -= 1) { 
-        rotation_ser.write(pos);           
-        delay(16);                      
-      }
-     */
+      rotate(0);
     }else{
-      /*
-      TODO NEED TO FIND PARAMETERS
-      for (int pos = Min; pos < Max; pos += 1) { 
-        claw_ser.write(pos);           
-        delay(16);                      
-      }
-      */
+      rotate(65);
     }
-    delay(1000);
     clawOrientation = orientation; 
-    /*
-    Serial.print("rotate to orientation: ");
-    Serial.print(orientation == HORIZONTAL ? "HORIZONTAL" : "VERTICAL");
-    Serial.print("\n");*/
   }
 }
 
 void lowerClaw(PieceType type){
   if(isClawHigh){
-    /*
-    TODO NEED TO FIND PARAMETERS
-    for (int pos = Max; pos > Min; pos -= 1) { 
-      Z_ser.write(pos);           
-      delay(16);                      
-    }
-    */
-    delay(1000);
+    down();
     isClawHigh = false;
-
-    //Serial.print("lower the claw \n");
   }
 }
 
 void raiseClaw(PieceType type){
   if(!isClawHigh){
-    /*
-    TODO NEED TO FIND PARAMETERS
-    for (int pos = Max; pos > Min; pos -= 1) { 
-      Z_ser.write(pos);           
-      delay(16);                      
-    }
-    */
-    delay(1000);
+    up();
     isClawHigh = true;
-
-    //Serial.print("raise the claw \n"); 
   }
 }
 

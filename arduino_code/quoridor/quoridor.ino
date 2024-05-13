@@ -10,7 +10,7 @@
 #define NextMovePin 18
 #define StopPin 19
 
-bool isWaitingForResponse = false;
+bool isWaitingForResponse = true; // false;
 
 void stopISR(){
   forceStopMotors();
@@ -29,8 +29,8 @@ void setupInterrupts(){
   //pinMode(StopPin, INPUT_PULLUP);
   //attachInterrupt(digitalPinToInterrupt(StopPin), stopISR, RISING);
 
-  pinMode(NextMovePin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(NextMovePin), nextMoveISR, RISING);
+  //pinMode(NextMovePin, INPUT_PULLUP);
+  //attachInterrupt(digitalPinToInterrupt(NextMovePin), nextMoveISR, RISING);
 }
 
 void setup() {
@@ -55,8 +55,7 @@ void loop() {
   #ifdef NORMAL_RUN
     if(isWaitingForResponse){
       waitingForResponseLoop();
-      isWaitingForResponse = false;
-      Serial.print("to false \n");
+      //isWaitingForResponse = false;
     }
   #endif
 }

@@ -20,25 +20,24 @@ int rotationSpeed = 10;
 int gripperSpeed = 10;
 
 //Starting position
-int linearStart = 90;
+int linearStart = 110;
 int rotationStart = 0;
 
 
 //End position
-int linearEnd = 0;
+int linearEnd = 15;
 int rotationEnd = 125;
 
 //gripper position
-int gripperOpen = 120;
+int gripperOpen = 130;
 int gripperClose = 180;
 int gripperWall = 168;
-int gripperPawn = 160;
+int gripperPawn = 165;
 
 void setup() {
- 
   gripperServo.write(gripperClose);
   delay(100);
-   gripperPos = gripperClose;
+  gripperPos = gripperClose;
 
   linearServo.write(linearStart);
   linearPos = linearStart;
@@ -51,86 +50,32 @@ void setup() {
   rotationServo.attach(5);
   gripperServo.attach(6);
 
-  //linearServo.write(linearPos);
-  //rotationServo.write(90);
-  //gripperServo.write(gripperPos);
-
   //Set the gripper to the right starting position
-  //grabWall();
+  release();
   up();
-  delay(100);
-  delay(100);
   rotate(0);
-  delay(100);
-
-
-  //down(linearEnd);
-
 }
 
 void loop() {
-
   
-  down(50);
-  release();
-  delay(200);
-  
-  down(0);
-  delay(100);
+  down();
   grabWall();
-  delay(200);
   up();
   // Put the piece down
-  delay(100);
-  down(0);
-  delay(200);
+  down();
   release();
   // go up
-  delay(100);
   up();
-
-  //rotate(65);
-  //down();
-  //grab();
-  //delay(100);
-
-  //up();
-  //rotate(125);
-  //delay(100);
-
-  //down();
-  //release();
-  //delay(1000);
-  //up();
-  //rotate(0);
-  //delay(1000);
-
-  //up();
-  //delay(1000);
-
-  // release();
-  // delay(1000);
-  // down();
-  // grabWall();
-  // up();
-  // rotate(65);
-  // delay(2000);
-  // down();
-  // release();
-  // delay(1000);
-  // up();
-  // rotate(0);
-
 }
 
 
 
-void down(int destination){
-  for (linearPos; linearPos >= destination; linearPos -= 1) {
+void down(){
+  for (linearPos; linearPos >= linearEnd; linearPos -= 1) {
     linearServo.write(linearPos);
     delay(linearSpeed);
   }
-
+  delay(100);
 }
 
 void up(){
@@ -138,6 +83,7 @@ void up(){
     linearServo.write(linearPos);
     delay(linearSpeed);
   }
+  delay(100);
 }
 
 void rotate(int angle){
@@ -152,6 +98,7 @@ void rotate(int angle){
       delay(rotationSpeed);
     }
   }
+  delay(100);
 }
 
 void grabWall(){
@@ -159,6 +106,7 @@ void grabWall(){
     gripperServo.write(gripperPos);
     delay(gripperSpeed);
   }
+  delay(100);
 }
 
 void grabPawn(){
@@ -166,6 +114,7 @@ void grabPawn(){
     gripperServo.write(gripperPos);
     delay(gripperSpeed);
   }
+  delay(100);
 }
 
 void release(){
@@ -173,4 +122,5 @@ void release(){
     gripperServo.write(gripperPos);
     delay(gripperSpeed);
   }
+  delay(100);
 }
