@@ -1,11 +1,13 @@
 import cv2
 from PIL import Image
 import numpy as np
-import detect_markers as dm
+import create_grid as grid
 
 from util import get_limits
 
-SIDE_LENGTH = 3
+SIDE_LENGTH = 8
+CELL_SIZE = 24
+WALL_SIZE = 6
 
 color = [99, 56, 44]  # Color in BGR colorspace
 
@@ -30,7 +32,7 @@ while True:
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
     # Find the aruco markers and build the grid
-    detected_markers, intersections = dm.detect_markers(frame, SIDE_LENGTH)
+    detected_markers, intersections = grid.game_board(frame, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
 
     if len(intersections) >= 1:
         print('------------------')

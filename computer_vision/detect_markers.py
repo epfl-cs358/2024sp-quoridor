@@ -103,7 +103,7 @@ def aruco_display(corners, ids, rejected, image, side_length):
     return image, intersections
 
 def detect_markers(frame, side_length):
-    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
     aruco_param = aruco.DetectorParameters()
     detector = aruco.ArucoDetector(aruco_dict, aruco_param)
 
@@ -122,7 +122,7 @@ def show_camera(index):
             print(ret)
             break
 
-        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
         aruco_param = aruco.DetectorParameters()
         detector = aruco.ArucoDetector(aruco_dict, aruco_param)
 
@@ -141,7 +141,7 @@ def show_camera(index):
 def main():
     
     while True:
-        show_camera(0)
+        show_camera(1)
         sleep(1)
 
 if __name__ == "__main__":
