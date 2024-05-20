@@ -11,6 +11,12 @@ WALL_SIZE = 6
 
 color = [99, 56, 44]  # Color in BGR colorspace
 
+color_wall1 = []
+color_wall2 = []
+color_player1 = []
+color_player2 = []
+
+
 cap = cv2.VideoCapture(0)
 # Set capture format to 'MJPG'
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
@@ -42,6 +48,8 @@ while True:
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     print(f'Found {len(contours)} contours')
     final_pieces = []
+
+    walls = []
     # Draw bounding box for each contour
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
@@ -54,6 +62,23 @@ while True:
 
         print(f'x: {x}, y: {y}, w: {w}, h: {h}')
         frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
+
+        # VERSION2 : BETTER FOR WALLS
+        area = cv2.contourArea(cnt)
+        # Ignore contours that are too small or too large
+        if area < 3700 or 100000 < area:
+            continue
+
+        # cv.minAreaRect returns:
+        # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
+        rect = cv2.minAreaRect(cnt)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
+
+        center = (int(rect[0][0]),int(rect[0][1])) 
+        angle = int(rect[2])
+
+        walls.append((center,angle))
 
 
     # Now I need to find to which grid the detected contours belong to based on the aruco markers detector
