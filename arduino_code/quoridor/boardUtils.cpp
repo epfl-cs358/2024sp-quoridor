@@ -22,5 +22,8 @@
 
 #define getMMWall(pos) (long)(pos * (boardSquaresLengthMM + boardSquaresSpacingMM) + boardSquaresLengthMM + (boardSquaresSpacingMM)/2)
 
-#define getStepXWall(posX) (long)(-1 * turnMMtoStep(getMMWall(posX) + (((posX) == 8) ? wallOffsetOnSideMM : 0)) + boardCornerLowerXStep) 
-#define getStepYWall(posY) (long)(turnMMtoStep(getMMWall(posY)) + boardCornerLowerYStep)
+#define getMMFreeWallX() (long)(-1 * (boardSquaresLengthMM + boardSquaresSpacingMM + (boardSquaresSpacingMM)/2))
+#define getMMFreeWallY(posY) (long)((posY) * (boardSquaresLengthMM + boardSquaresSpacingMM) - (boardSquaresSpacingMM)/2)
+
+#define getStepXWall(posX, posY) (long)(-1 * turnMMtoStep((posX == 8) ? getMMFreeWallX() : getMMWall(posX)) + boardCornerLowerXStep) 
+#define getStepYWall(posX, posY) (long)(turnMMtoStep((posX == 8) ? getMMFreeWallY(posY) : getMMWall(posY)) + boardCornerLowerYStep)

@@ -152,11 +152,10 @@ void setupMotors() {
   XY.addStepper(X);
   XY.addStepper(Y);
 
-  //TODO ADD LATER
   setupGrabber();
 
   Serial.begin(9600);
-  Serial.print("\n START \n");
+  //Serial.print("\n START \n");
 
   delay(3000);
 }
@@ -179,18 +178,25 @@ void goToOrigin(){
   moveToXY(0, 0);
 }
 
+bool validPlayer(BoardPosition pos){
+  return 0 <= pos && pos / 10 <= 8 && pos % 10 <= 8;
+}
+
+bool validWall(BoardPosition pos){
+  return 0 <= pos && (pos / 10 <= 7 && pos % 10 <= 7 || pos % 10 == 8);
+}
+
 void playMove(MoveData move_data){
 
   //Check for invalid positions
-  if(move_data.old_position % 10 == 9 ||
-     (move_data.old_position > 88 && move_data.piece_type == PLAYER) ||
-     (move_data.old_position > 78 && move_data.piece_type == WALL) ||
-     move_data.new_position % 10 == 9 ||
-     (move_data.new_position > 88 && move_data.piece_type == PLAYER) ||
-     (move_data.new_position > 78 && move_data.piece_type == WALL)
+  if((move_data.piece_type == PLAYER && !validPlayer(move_data.old_position)) ||
+     (move_data.piece_type == PLAYER && !validPlayer(move_data.new_position)) ||
+     (move_data.piece_type == WALL && !validWall(move_data.old_position)) ||
+     (move_data.piece_type == WALL && !validWall(move_data.new_position))
      ){
       Serial.println("NOT VALID POSITION");
-      return;}
+      return;
+    }
 
   X.enableOutputs();
   Y.enableOutputs();
@@ -224,8 +230,8 @@ void moveToBoardPosition(BoardPosition pos, PieceType type){
     x = getStepXPlayer(posX);
     y = getStepYPlayer(posY);
   }else{
-    x = getStepXWall(posX);
-    y = getStepYWall(posY);
+    x = getStepXWall(posX, posY);
+    y = getStepYWall(posX, posY);
   }
   moveToXY(x, y);
 }
