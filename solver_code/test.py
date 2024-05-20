@@ -2,26 +2,27 @@ import serial
 import time
 
 # Open serial port
-ser = serial.Serial('COM4', 9600, timeout=1)
+ser = serial.Serial('COM4', 9600)
 
 try:
     while True:
         # Read bytes from Arduino
-        received_bytes = ser.readline()
-        
-        # Check if any bytes were received
-        if received_bytes:
-            print("Received from Arduino:", received_bytes)
-            # Convert bytes to string (assuming ASCII encoding)
-            # received_message = received_bytes.decode().strip()
+        if ser.readable:
+            received_bytes = ser.readline()
             
-            # # Print received message
-            # print("Received from Arduino:", received_message)
+            # Check if any bytes were received
+            if received_bytes:
+                print("Received from Arduino:", received_bytes)
             
-            # # Send response to Arduino
-            response_message = "Message received: "
-            # ser.write(response_message.encode())
-        
+                # # Send response to Arduino
+                time.sleep(3)
+                response_message = "Message received: "
+                sent_message = False
+                while(not(sent_message)):
+                    if(ser.writable):
+                        ser.write(response_message.encode())
+                        sent_message = True
+                        print("Message sent")
         # Wait for a moment before sending next message
         time.sleep(1)
 finally:

@@ -112,7 +112,10 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
         print(player_path)
 
     if(len(bot_path) <= len(player_path) or free_walls == []):
-        return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[1])
+        if(bot_path[1] == player_path[0]):
+            return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[2])
+        else:
+            return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[1])
     else:
         best_winning_move = (free_walls[0], bot_path, player_path)
         best_losing_move = (free_walls[0], bot_path, player_path)
@@ -179,30 +182,58 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
             return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_losing_move[0][0], free_walls[0][1], best_losing_move[0][1])       
 # ==== DON'T CHANGE BEFORE THIS LINE ==== 
 
+# ==== FREE WALL MEMORY MANAGEMENT ==== 
+free_wall_mem = []
+def init_free_walls():
+    try:
+        nb_free_walls = max(0, min(int(input("number of free walls:")), 10))
+    except ValueError:
+        nb_free_walls = 10
+
+    for i in range(10 - nb_free_walls, 10):
+        free_wall_mem.append((10 * i + 8, "HORIZONTAL"))
+
+import re
+def remove_free_wall(move):
+    if("WALL" in move):
+        result = re.findall(r'\<.*?\>', move)
+        position = int(result[0].replace('<', '').replace('>', ''))
+        if(position % 10 == 8):
+            free_wall_mem.remove((position, "HORIZONTAL"))
+
 # ==== COMMUNICATION ====
 import serial
 import time
-ser = serial.Serial()
-ser.baudrate = 9600
-ser.port = 'COM9'
-ser.open()
-
+ser = serial.Serial('COM4', 9600)
+init_free_walls()
 time.sleep(5)
 
-while True:
-    #serialRead = ser.readline()
-    print("waiting")
-    time.sleep(5)
-    # if(serialRead == "Get next move".encode()):
-    #     print("got signal")
-    #     time.sleep(5)
+try:
+    while True:
+        # Read bytes from Arduino
+        if ser.readable:
+            received_bytes = ser.readline()
+            
+            # Check if any bytes were received
+            if received_bytes:
+                print("Received from Arduino: ", received_bytes)
+                
+                # # ==== MANAGING OF BOARD STATE ====
+                bot_node = 4
+                player_node = 64        
+                board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
+                response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
 
-    #     # # ==== MANAGING OF BOARD STATE ====
-    #     bot_node = 4
-    #     player_node = 84        
-    #     board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
-    #     next_move = greedy_quoridor_solver(bot_node, player_node, board_walls, True)
-
-    #     ser.write(next_move.encode())
-
-    #     time.sleep(10)
+                # Send response to Arduino
+                sent_message = False
+                while(not(sent_message)):
+                    if(ser.writable):
+                        ser.write(response_message.encode())
+                        sent_message = True
+                        print("Message sent: ", response_message)
+                        remove_free_wall(response_message)
+        # Wait for a moment before sending next message
+        time.sleep(1)
+finally:
+    ser.close()
+    print("Failure")
