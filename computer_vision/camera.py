@@ -20,5 +20,5 @@ def show_camera(index):
 
 
 while True:
-    show_camera(0)
+    show_camera(1)
     sleep(1)

@@ -39,7 +39,7 @@ def generate_bulk_markers(aruco_dict):
 
 
 def main():
-    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
 
     
     user_input = input("Press 1 to generate a single marker. Press 2 to generate markers in bulk: ")
