@@ -1,7 +1,5 @@
 import cv2
-from PIL import Image
 import numpy as np
-import create_grid as grid
 
 from util import get_limits
 
