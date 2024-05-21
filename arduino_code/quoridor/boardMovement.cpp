@@ -155,7 +155,7 @@ void setupMotors() {
   setupGrabber();
 
   Serial.begin(9600);
-  //Serial.print("\n START \n");
+  Serial.println("START");
 
   delay(3000);
 }

@@ -18,7 +18,7 @@ void stopISR(){
 } 
 
 void nextMoveISR(){
-  Serial.print("Interrupt triggered");
+  Serial.println("Interrupt triggered");
   if(!isWaitingForResponse){
     Serial.println("Get next move");
     isWaitingForResponse = true;
@@ -38,7 +38,7 @@ void setup() {
   // Calibration sequence
   calibrateMotors();
   #ifdef NORMAL_RUN
-   //setupInterpreter();
+   setupInterpreter();
    setupInterrupts(); 
   #endif
   #ifdef DEBUG_MOVE

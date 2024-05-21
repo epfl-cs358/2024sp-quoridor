@@ -186,7 +186,7 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
 free_wall_mem = []
 def init_free_walls():
     try:
-        nb_free_walls = max(0, min(int(input("number of free walls:")), 10))
+        nb_free_walls = max(0, min(int(input("number of free walls: ")), 10))
     except ValueError:
         nb_free_walls = 10
 
@@ -216,22 +216,23 @@ try:
             
             # Check if any bytes were received
             if received_bytes:
-                print("Received from Arduino: ", received_bytes)
+                print("Received from Arduino: ", received_bytes.decode().rstrip('\n'))
                 
-                # # ==== MANAGING OF BOARD STATE ====
-                bot_node = 4
-                player_node = 64        
-                board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
-                response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
+                if(received_bytes == b'Get next move\r\n'):
+                    # # ==== MANAGING OF BOARD STATE ====
+                    bot_node = 4
+                    player_node = 64        
+                    board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
+                    response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
 
-                # Send response to Arduino
-                sent_message = False
-                while(not(sent_message)):
-                    if(ser.writable):
-                        ser.write(response_message.encode())
-                        sent_message = True
-                        print("Message sent: ", response_message)
-                        remove_free_wall(response_message)
+                    # Send response to Arduino
+                    sent_message = False
+                    while(not(sent_message)):
+                        if(ser.writable):
+                            ser.write(response_message.encode())
+                            sent_message = True
+                            print("Message sent: ", response_message)
+                            remove_free_wall(response_message)
         # Wait for a moment before sending next message
         time.sleep(1)
 finally:

@@ -35,12 +35,12 @@ MoveData getMoveDataFromString(char* string_of_commands){
 }
 
 void setupInterpreter(){
-  Serial.print("To use the interpreter use commands: \n");
-  Serial.print("<old_position><new_position><WALL><old_orientation><new_orientation> \n");
-  Serial.print("or \n");
-  Serial.print("<old_position><new_position><PLAYER>\n");
-  Serial.print("where old_position and new_positions must be integers, \n");
-  Serial.print("and old_orientation and new_orientation can either be HORIZONTAL or VERTICAL. \n");
+  Serial.println("To use the interpreter use commands:");
+  Serial.println("<old_position><new_position><WALL><old_orientation><new_orientation>");
+  Serial.println("or");
+  Serial.println("<old_position><new_position><PLAYER>");
+  Serial.println("where old_position and new_positions must be integers,");
+  Serial.println("and old_orientation and new_orientation can either be HORIZONTAL or VERTICAL.");
 }
 
 void waitingForResponseLoop(){
