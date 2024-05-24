@@ -3,7 +3,7 @@ import numpy as np
 
 from util import get_limits
 
-SIDE_LENGTH = 8
+SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
 

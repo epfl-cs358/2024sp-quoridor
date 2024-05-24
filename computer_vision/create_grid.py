@@ -5,7 +5,7 @@ from cv2 import aruco
 from collections import defaultdict
 from time import sleep
 
-SIDE_LENGTH = 8
+SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
 
