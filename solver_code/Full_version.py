@@ -104,6 +104,9 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
 
     initGraph(board_walls)
 
+    if(win_for_bot(bot_node) or win_for_player(player_node)):
+        return None
+
     bot_path = shortest_path_to_win(bot_node, edges, win_for_bot)
     player_path = shortest_path_to_win(player_node, edges, win_for_player)
     
@@ -204,7 +207,7 @@ def remove_free_wall(move):
 # ==== COMMUNICATION ====
 import serial
 import time
-ser = serial.Serial('COM4', 9600)
+ser = serial.Serial('COM6', 9600)
 init_free_walls()
 time.sleep(5)
 
@@ -225,14 +228,17 @@ try:
                     board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
                     response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
 
-                    # Send response to Arduino
-                    sent_message = False
-                    while(not(sent_message)):
-                        if(ser.writable):
-                            ser.write(response_message.encode())
-                            sent_message = True
-                            print("Message sent: ", response_message)
-                            remove_free_wall(response_message)
+                    if response_message == None:
+                        print("Someone won the game!")
+                    else:    
+                        # Send response to Arduino
+                        sent_message = False
+                        while(not(sent_message)):
+                            if(ser.writable):
+                                ser.write(response_message.encode())
+                                sent_message = True
+                                print("Message sent: ", response_message)
+                                remove_free_wall(response_message)
         # Wait for a moment before sending next message
         time.sleep(1)
 finally:

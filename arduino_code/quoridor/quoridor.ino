@@ -18,7 +18,6 @@ void stopISR(){
 } 
 
 void nextMoveISR(){
-  Serial.println("Interrupt triggered");
   if(!isWaitingForResponse){
     Serial.println("Get next move");
     isWaitingForResponse = true;

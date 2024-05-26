@@ -218,6 +218,8 @@ void playMove(MoveData move_data){
 
   X.disableOutputs();
   Y.disableOutputs();
+
+  
 }
 
 void moveToBoardPosition(BoardPosition pos, PieceType type){
