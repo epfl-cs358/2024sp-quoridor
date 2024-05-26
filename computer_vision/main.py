@@ -11,7 +11,7 @@ WALL_SIZE = 6
 
 color = [99, 56, 44]  # Color in BGR colorspace
 
-color_wall1 = []
+color_wall1 = [88,82,190]
 color_wall2 = []
 color_player1 = []
 color_player2 = []
@@ -26,9 +26,8 @@ while True:
     if not ret:
         break
 
-
     hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lowerLimit, upperLimit = get_limits(color=color, sensitivity=30)
+    lowerLimit, upperLimit = get_limits(color=color_wall1, sensitivity=30)
     mask = cv2.inRange(hsvImage, lowerLimit, upperLimit)
     mask_ = Image.fromarray(mask)
 

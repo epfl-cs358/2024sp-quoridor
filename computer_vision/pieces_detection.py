@@ -3,7 +3,7 @@ import numpy as np
 
 from util import get_limits
 
-SIDE_LENGTH = 8
+SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
 
@@ -16,7 +16,7 @@ color_player2 = []
 
 def detect_color(color, frame):
     hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lowerLimit, upperLimit = get_limits(color=color, sensitivity=30)
+    lowerLimit, upperLimit = get_limits(color, sensitivity=30)
     return cv2.inRange(hsvImage, lowerLimit, upperLimit)
 
 
@@ -26,7 +26,6 @@ def detect_walls(color, image, intersections):
 
     # Find contours
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(f'Found {len(contours)} contours')
     walls = []
 
     for cnt in contours:
@@ -35,7 +34,7 @@ def detect_walls(color, image, intersections):
         # Ignore contours that are too small or too large
 
         #TODO: Tune these values
-        if area < 3700 or 100000 < area:
+        if area < 2500 or 100000 < area:
             continue
 
         # cv.minAreaRect returns:
@@ -48,12 +47,14 @@ def detect_walls(color, image, intersections):
         angle = int(rect[2])
 
         #Detect cell of the wall
-        cell = detect_cell_wall(center, intersections)
+        cell = detect_cell_wall(center, angle, intersections)
 
+        # walls.append((cell,angle))
         walls.append((cell,angle))
+
         # Draw each contour only for visualisation purposes
-        image = cv2.drawContours(image,[box],0,color,2)
-        image = cv2.putText(image, f"({cell[0]}, {cell[1]})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        image = cv2.drawContours(image,[box],0,(0,0,255),2)
+        # image = cv2.putText(image, f"({cell[0]}, {cell[1]})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
     return image, walls
 
