@@ -55,19 +55,37 @@ def correct_perspective(image, image_size):
         for (markerCorner, markerID) in zip(corners, ids):
             marker_corners = markerCorner.reshape((4,2))
             src_corners[markerID] = marker_corners[markerID]
-            inner_coordinate = (markerID + 2) % 4
+            inner_coordinate = 3 - markerID
             inner_corners[markerID] = marker_corners[inner_coordinate]
 
         M = cv2.getPerspectiveTransform(src_corners, dst_corners)
-        dst = cv2.warpPerspective(image, M, (image_size, image_size))
 
         ones = np.ones((4, 1))
         inner_corners_homogeneous = np.hstack([inner_corners, ones])
         transformed_inner_corners_homogeneous = M @ inner_corners_homogeneous.T
         transformed_inner_corners = transformed_inner_corners_homogeneous[:2, :] / transformed_inner_corners_homogeneous[2, :]
         transformed_inner_corners = transformed_inner_corners.T
+        
+        extra_height_distance = np.linalg.norm(dst_corners[0] - transformed_inner_corners[0])
+        extra_height = image_size + 2*extra_height_distance
 
-        return dst, transformed_inner_corners, ids
+        final_corners = np.array([
+            [0.0, 0.0],
+            [image_size, 0.0], 
+            [image_size, extra_height], 
+            [0.0, extra_height]
+        ], dtype=np.float32)
+
+        M_final = cv2.getPerspectiveTransform(src_corners, final_corners)
+
+        inner_corners_homogeneous_final = np.hstack([inner_corners, ones])
+        final_inner_corners_homogeneous = M_final @ inner_corners_homogeneous_final.T
+        final_inner_corners = final_inner_corners_homogeneous[:2, :] / final_inner_corners_homogeneous[2, :]
+        final_inner_corners = final_inner_corners.T
+    
+        dst = cv2.warpPerspective(image, M_final, (image_size, int(extra_height)))
+
+        return dst, final_inner_corners, ids
     return image, None, None
 
 
