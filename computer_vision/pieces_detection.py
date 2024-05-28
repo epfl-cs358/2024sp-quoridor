@@ -47,7 +47,7 @@ def detect_walls(color, image, intersections):
         angle = int(rect[2])
 
         #Detect cell of the wall
-        cell = detect_cell_wall(center, angle, intersections)
+        cell = detect_cell_wall(center, intersections)
 
         # walls.append((cell,angle))
         walls.append((cell,angle))
@@ -109,33 +109,19 @@ def detect_cell_player(center, intersections):
             return top_left[1][0],top_left[1][1]
 
 
-def detect_cell_wall(center, orientation, intersections):
+def detect_cell_wall(center, intersections):
     cx = center[0]
     cy = center[1]
 
     ## horizontal wall
-    if orientation == "HORIZONTAL":
-        for i in range(SIDE_LENGTH*2, len(intersections)-SIDE_LENGTH*4-1):
-            print("index is ", i)
-            top_left = intersections[i+0]
-            top_right = intersections[i+1]
-            bottom_left = intersections[i+SIDE_LENGTH*2]
-            bottom_right = intersections[i+1+SIDE_LENGTH*2]
-            print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-            print (" and object center is ", cx, " ", cy)
-            if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-                print("x marks the spot")
-                return bottom_left[1][0],bottom_left[1][1]
-            
-    else:
-        for i in range(1, len(intersections)-SIDE_LENGTH*2-2):
-            print("index is ", i)
-            top_left = intersections[i+0]
-            top_right = intersections[i+1]
-            bottom_left = intersections[i+SIDE_LENGTH*2]
-            bottom_right = intersections[i+1+SIDE_LENGTH*2]
-            print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-            print (" and object center is ", cx, " ", cy)
-            if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-                print("x marks the spot")
-                return top_left[1][0],top_left[1][1]
+    for i in range(1, len(intersections)-SIDE_LENGTH*4-1):
+        print("index is ", i)
+        top_left = intersections[i+0]
+        top_right = intersections[i+1]
+        bottom_left = intersections[i+SIDE_LENGTH*2]
+        bottom_right = intersections[i+1+SIDE_LENGTH*2]
+        print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
+        print (" and object center is ", cx, " ", cy)
+        if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
+            print("x marks the spot")
+            return bottom_left[1][0],bottom_left[1][1]
