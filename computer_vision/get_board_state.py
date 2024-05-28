@@ -29,30 +29,30 @@ def detect_pieces():
     # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
 
     # while player1 == [] or player2 == [] or walls_1 == [] or walls_2 == []:
-    while True:
+    # while True:
         # ret, frame = cap.read()
         # if not ret:
         #     break
 
-        frame = cv2.imread("board.jpeg", cv2.IMREAD_COLOR)
+    frame = cv2.imread("board.jpeg", cv2.IMREAD_COLOR)
 
-        detected_markers, intersections = grid.game_board(frame.copy(), SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
-        
-        frame_walls, walls_1 = detect.detect_walls(color_wall1, frame.copy(), intersections)
-        # frame_walls, walls_2 = detect.detect_walls(color_wall2, frame.copy(), intersections)
-        # frame_piece1, player1 = detect.detect_player(color_player1, frame.copy(), intersections)
-        # frame_piece2, player2 = detect.detect_player(color_player2, frame.copy(), intersections)
+    detected_markers, intersections = grid.game_board(frame.copy(), SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+    
+    frame_walls, walls_1 = detect.detect_walls(color_wall1, frame.copy(), intersections)
+    # frame_walls, walls_2 = detect.detect_walls(color_wall2, frame.copy(), intersections)
+    # frame_piece1, player1 = detect.detect_player(color_player1, frame.copy(), intersections)
+    # frame_piece2, player2 = detect.detect_player(color_player2, frame.copy(), intersections)
 
 
-        print(f'Found {len(walls_1)} walls')
-        print(walls_1)
-        
-        cv2.imshow('frame', frame_walls)
+    print(f'Found {len(walls_1)} walls')
+    print(walls_1)
+    
+    cv2.imshow('frame', frame_walls)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
 
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
     walls = walls_1 + walls_2
 
