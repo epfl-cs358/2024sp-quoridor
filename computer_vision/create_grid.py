@@ -5,6 +5,7 @@ from cv2 import aruco
 from collections import defaultdict
 from time import sleep
 
+IMAGE_SIZE = 500
 SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
@@ -32,21 +33,51 @@ def compute_intersection(line1, line2):
     
     return (int(intersection_x), int(intersection_y))
 
-def aruco_detect(image):
-
+def correct_perspective(image, image_size):
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
     aruco_param = aruco.DetectorParameters()
     detector = aruco.ArucoDetector(aruco_dict, aruco_param)
 
     (corners, ids, rejected) = detector.detectMarkers(image)
 
-    board_corners = {}
+    src_corners = np.zeros((4,2), dtype=np.float32)
+    inner_corners = np.zeros((4,2), dtype=np.float32)
+    dst_corners = np.array([
+        [0.0, 0.0],
+        [image_size, 0.0], 
+        [image_size, image_size], 
+        [0.0, image_size]
+    ], dtype=np.float32)
 
-    if len(corners) > 0:
+    if len(corners) == 4:
         ids = ids.flatten()
 
         for (markerCorner, markerID) in zip(corners, ids):
-            corners = markerCorner.reshape((4,2))
+            marker_corners = markerCorner.reshape((4,2))
+            src_corners[markerID] = marker_corners[markerID]
+            inner_coordinate = (markerID + 2) % 4
+            inner_corners[markerID] = marker_corners[inner_coordinate]
+
+        M = cv2.getPerspectiveTransform(src_corners, dst_corners)
+        dst = cv2.warpPerspective(image, M, (image_size, image_size))
+
+        ones = np.ones((4, 1))
+        inner_corners_homogeneous = np.hstack([inner_corners, ones])
+        transformed_inner_corners_homogeneous = M @ inner_corners_homogeneous.T
+        transformed_inner_corners = transformed_inner_corners_homogeneous[:2, :] / transformed_inner_corners_homogeneous[2, :]
+        transformed_inner_corners = transformed_inner_corners.T
+
+        return dst, transformed_inner_corners, ids
+    return image, None, None
+
+
+
+def aruco_detect(image, corners, ids):
+    board_corners = {}
+
+    if corners is not None and ids is not None and len(corners) > 0:
+
+        for (markerCorner, markerID) in zip(corners, ids):
             (topLeft, topRight, bottomRight, bottomLeft) = corners
 
             topRight = (int(topRight[0]), int(topRight[1]))
@@ -59,8 +90,7 @@ def aruco_detect(image):
             cv2.line(image, bottomRight, bottomLeft, (255, 0, 0), 2)
             cv2.line(image, bottomLeft, topLeft, (0, 255, 0), 2)
 
-            cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5, (0, 255, 0), 2)
+            ##cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             if markerID == 0:
                 board_corners["top left"] = bottomLeft
@@ -118,10 +148,9 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
                            intersections.append((newPoint, (border[1], coordinate)))
                         else:
                            intersections.append((newPoint, (coordinate, border[1])))
-                        cv2.circle(image, (newPoint), 5, (255, 255, 0), -1)
-                        cv2.putText(image, str(coordinate), (newPoint), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                        ##cv2.circle(image, (newPoint), 5, (255, 255, 0), -1)
+                        ##cv2.putText(image, str(coordinate), (newPoint), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
-    ##todo
     if len(intersections) > 0:
         for x in range(number_grid_lines):
             start_point = intersections[x][0]
@@ -142,10 +171,11 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
                             
     return image, intersections
         
-def game_board(frame, SIDE_LENGTH, CELL_SIZE, WALL_SIZE):
-    (image, board_corners) = aruco_detect(frame)
-    intersections = create_grid(image, board_corners, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
-    return intersections
+def game_board(frame, IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE):
+    (image, corners, ids) = correct_perspective(frame, IMAGE_SIZE)
+    (image, board_corners) = aruco_detect(image, corners, ids)
+    image, intersections = create_grid(image, board_corners, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+    return image, intersections
 
 def show_camera(index):
     cap = cv2.VideoCapture(index)
@@ -157,7 +187,7 @@ def show_camera(index):
             print(ret)
             break
 
-        image, intersections = game_board(frame, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+        image, intersections = game_board(frame, IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
         
         cv2.imshow("Camera", image)
 
