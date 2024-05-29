@@ -103,11 +103,11 @@ def aruco_detect(image, corners, ids):
             bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
             topLeft = (int(topLeft[0]), int(topLeft[1]))
 
-            cv2.line(image, topLeft, topRight, (255, 0, 0), 2)
+            """ cv2.line(image, topLeft, topRight, (255, 0, 0), 2)
             cv2.line(image, topRight, bottomRight, (0, 255, 0), 2)
             cv2.line(image, bottomRight, bottomLeft, (255, 0, 0), 2)
             cv2.line(image, bottomLeft, topLeft, (0, 255, 0), 2)
-
+ """
             ##cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             if markerID == 0:
@@ -173,7 +173,7 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
         for x in range(number_grid_lines):
             start_point = intersections[x][0]
             end_point = intersections[x + 2*number_grid_lines][0]
-            cv2.line(image, start_point, end_point, (0, 0, 255), 2)
+            ##cv2.line(image, start_point, end_point, (0, 0, 255), 2)
             coordinate = intersections[x][1][0]
             vertical_lines.append(((start_point, end_point), coordinate))
 
@@ -181,7 +181,7 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
             start_point = intersections[y + 3*number_grid_lines][0]
             end_point = intersections[y + number_grid_lines][0]
             line1 = (start_point, end_point)
-            cv2.line(image, start_point, end_point, (0,0,225), 2)
+            ##cv2.line(image, start_point, end_point, (0,0,225), 2)
             coordinate = intersections[y + 3*number_grid_lines][1][1]
             for i in range(number_grid_lines):
                 line2 = vertical_lines[i]
