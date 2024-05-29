@@ -30,18 +30,12 @@ def detect_walls(color, image, intersections):
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
-
         # Ignore contours that are too small or too large
-
         #TODO: Tune these values
         if area < 500 or 30000 < area:
             continue
 
-        # print(f'Area: {area}')
-
-
-        # cv.minAreaRect returns:
-        # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
+        # cv.minAreaRect returns: (center(x, y), (width, height), angle of rotation) 
         rect = cv2.minAreaRect(cnt)
         cvAngle = int(rect[2])
 
@@ -61,10 +55,10 @@ def detect_walls(color, image, intersections):
         if (height < width): 
             angle = 'H'
 
-        # if(angle == 'V' and (width < 10 or width > 40 or height > 200 or height < 170 )) :
-        #     continue
-        # if (angle == 'H' and (height < 10 or height > 40 or width > 200 or width < 170 )) :
-        #     continue
+        if(angle == 'V' and (height > 150 or height < 100 )) :
+            continue
+        if (angle == 'H' and (width > 150 or width < 100 )) :
+            continue
 
         if (cvAngle == 90):
             if (angle == 'H'):
@@ -101,27 +95,34 @@ def detect_player(color, image, intersections):
     # Find contours
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     print(f'Found {len(contours)} contours')
-    player = [0,0,0]
+    cell = [0,0]
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
+        # Ignore contours that are too small or too large
+        #TODO: Tune these values
+        if area < 500 or 30000 < area:
+            continue
+
+        # cv.minAreaRect returns: (center(x, y), (width, height), angle of rotation) 
         rect = cv2.minAreaRect(cnt)
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+
+        if(width < 10 or width > 45 or height > 45 or height < 25 ) :
+            continue
+
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
+
         center = (int(rect[0][0]),int(rect[0][1])) 
 
-        #Keep the larger area only 
-        if (area > player[1]) :
-            player = [center, area, rect]
-
-    # Now detect the cell associated with this player
-    cell = detect_cell_player(player[0], intersections)
+        # Now detect the cell associated with this player
+        cell = detect_cell_player(center, intersections)
+        print(f'Cell: {cell}')
         
-    # Draw each contour only for visualisation purposes
-    box = cv2.boxPoints(player[2])
-    box = np.int0(box)
-    image = cv2.drawContours(image,[box],0,color,2)
-    image = cv2.putText(image, f"({cell[0]}, {cell[1]})", (player[0][0], player[0][1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
+        # Draw each contour only for visualisation purposes
+        image = cv2.drawContours(image,[box],0,(0, 255, 0),2)
 
     return image, cell
 
