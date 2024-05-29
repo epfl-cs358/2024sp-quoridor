@@ -2,9 +2,11 @@ import cv2
 from PIL import Image
 import numpy as np
 import create_grid as grid
+import os
 
 import pieces_detection as detect
 
+IMAGE_SIZE = 500
 SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
@@ -33,6 +35,8 @@ def detect_pieces():
             ret, frame = cap.read()
     
         # USED WHEN DEBUGGING WHILE NOT AT DLL with picture of the board stored
+        # script_dir = os.path.dirname(os.path.abspath(__file__))
+        # image_dir = os.path.join(script_dir, "image.png")
         # frame = cv2.imread("image.png", cv2.IMREAD_COLOR)
 
         warped_img, intersections = grid.game_board(frame.copy(),IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
