@@ -5,6 +5,7 @@ import create_grid as grid
 
 from util import get_limits
 
+IMAGE_SIZE = 600
 SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
@@ -37,7 +38,7 @@ while True:
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
     # Find the aruco markers and build the grid
-    detected_markers, intersections = grid.game_board(frame, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+    warped_image, intersections = grid.game_board(frame, IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
 
     if len(intersections) >= 1:
         print('------------------')
