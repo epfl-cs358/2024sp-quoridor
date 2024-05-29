@@ -2,11 +2,13 @@ import cv2
 from PIL import Image
 import numpy as np
 import create_grid as grid
+import os
 
 import pieces_detection as detect
 
 from util import get_limits
 
+IMAGE_SIZE = 300
 SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
@@ -34,15 +36,17 @@ def detect_pieces():
         # if not ret:
         #     break
 
-    frame = cv2.imread("board3.jpeg", cv2.IMREAD_COLOR)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    image_dir = os.path.join(script_dir, "board3.jpeg")
+    frame = cv2.imread(image_dir, cv2.IMREAD_COLOR)
 
-    detected_markers, intersections = grid.game_board(frame.copy(), SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+    warped_image, intersections = grid.game_board(frame.copy(), IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
 
-    # print(f'Found {len(detected_markers)} markers')
+    print(f'Found {len(intersections)} intersections')
     # print('Intersections:')
     # print(intersections)
     
-    frame_walls, walls_1 = detect.detect_walls(color_wall1, frame.copy(), intersections)
+    frame_walls, walls_1 = detect.detect_walls(color_wall1, warped_image, intersections)
     # frame_walls, walls_2 = detect.detect_walls(color_wall2, frame.copy(), intersections)
     # frame_piece1, player1 = detect.detect_player(color_player1, frame.copy(), intersections)
     # frame_piece2, player2 = detect.detect_player(color_player2, frame.copy(), intersections)
