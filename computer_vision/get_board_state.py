@@ -5,11 +5,11 @@ import create_grid as grid
 
 import pieces_detection as detect
 
-from util import get_limits
-
 SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
+IMAGE_SIZE = 600
+
 
 color_wall1 = [127,47,26]
 color_wall2 = [56,74,189] 
@@ -23,7 +23,7 @@ def detect_pieces():
     walls_1 = [] # List of tuples with ((x, y), orientation) (orientation = horizontal or vertical) 
     walls_2 = [] # List of tuples with ((x, y), orientation) 
 
-    # cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
 
     # Set capture format to 'MJPG'
     # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
@@ -34,15 +34,14 @@ def detect_pieces():
         # if not ret:
         #     break
 
-    frame = cv2.imread("board3.jpeg", cv2.IMREAD_COLOR)
-
-    detected_markers, intersections = grid.game_board(frame.copy(), SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+    frame = cv2.imread("board4.jpeg", cv2.IMREAD_COLOR)
+    warped_img, intersections = grid.game_board(frame.copy(),IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
 
     # print(f'Found {len(detected_markers)} markers')
     # print('Intersections:')
     # print(intersections)
     
-    frame_walls, walls_1 = detect.detect_walls(color_wall1, frame.copy(), intersections)
+    frame_walls, walls_1 = detect.detect_walls(color_wall1, warped_img.copy(), intersections)
     # frame_walls, walls_2 = detect.detect_walls(color_wall2, frame.copy(), intersections)
     # frame_piece1, player1 = detect.detect_player(color_player1, frame.copy(), intersections)
     # frame_piece2, player2 = detect.detect_player(color_player2, frame.copy(), intersections)
