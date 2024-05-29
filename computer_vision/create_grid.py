@@ -73,6 +73,12 @@ def correct_perspective(image, image_size):
             if markerID <= 1:
                 ## !!!!CHANGE THIS NUMBER TO CORRECT PERSPECTIVE !!!
                 marker_corners[:, 1] -= 15
+            if markerID == 1 or markerID == 2:
+                ## !!!!CHANGE THIS NUMBER TO CORRECT PERSPECTIVE !!!
+                marker_corners[:, 0] += 15
+            if markerID == 0 or markerID == 3:
+                ## !!!!CHANGE THIS NUMBER TO CORRECT PERSPECTIVE !!!
+                marker_corners[:, 0] -= 10
             src_corners[markerID] = marker_corners[markerID]
             inner_coordinate = 3 - markerID
             inner_corners[markerID] = marker_corners[inner_coordinate]
@@ -167,7 +173,7 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
         for x in range(number_grid_lines):
             start_point = top_intersections[x][0]
             end_point = bottom_intersections[x][0]
-            # cv2.line(image, start_point, end_point, (0, 0, 255), 2)
+            #cv2.line(image, start_point, end_point, (0, 0, 255), 2)
             coordinate = top_intersections[x][1][0]
             vertical_lines.append(((start_point, end_point), coordinate))
 
@@ -175,7 +181,7 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
             start_point = left_intersections[y][0]
             end_point = right_intersections[y][0]
             line1 = (start_point, end_point)
-            # cv2.line(image, start_point, end_point, (0,0,225), 2)
+            #cv2.line(image, start_point, end_point, (0,0,225), 2)
             coordinate = left_intersections[y][1][1]
             for i in range(number_grid_lines):
                 line2 = vertical_lines[i]

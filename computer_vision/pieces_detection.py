@@ -76,7 +76,7 @@ def detect_walls(color, image, intersections):
      
 
         #Detect cell of the wall
-        cell = detect_cell_wall(center, intersections)
+        cell = detect_cell_wall(image, center, intersections)
 
         # walls.append((cell,angle))
         walls.append((cell,angle))
@@ -144,7 +144,7 @@ def detect_cell_player(center, intersections):
             return top_left[1]
 
 
-def detect_cell_wall(center, intersections):
+def detect_cell_wall(image, center, intersections):
     cx = center[0]
     cy = center[1]
 
@@ -161,8 +161,8 @@ def detect_cell_wall(center, intersections):
         if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
             print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
             print(f"at index {i} intersection for top left is {intersections[i]}")
-            #cv2.circle(image, (top_left[0]), 5, (255, 255, 0), -1)
-            #cv2.circle(image, (top_right[0]), 5, (255, 255, 0), -1)
-            #cv2.circle(image, (bottom_left[0]), 5, (255, 255, 0), -1)
-            #cv2.circle(image, (bottom_right[0]), 5, (255, 255, 0), -1)
+            """ cv2.circle(image, (top_left[0]), 5, (255, 255, 0), -1)
+            cv2.circle(image, (top_right[0]), 5, (255, 255, 0), -1)
+            cv2.circle(image, (bottom_left[0]), 5, (255, 255, 0), -1)
+            cv2.circle(image, (bottom_right[0]), 5, (255, 255, 0), -1) """
             return top_left[1]
