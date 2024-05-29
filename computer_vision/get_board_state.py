@@ -34,9 +34,13 @@ def detect_pieces():
         # if not ret:
         #     break
 
-    frame = cv2.imread("board.jpeg", cv2.IMREAD_COLOR)
+    frame = cv2.imread("board3.jpeg", cv2.IMREAD_COLOR)
 
     detected_markers, intersections = grid.game_board(frame.copy(), SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+
+    # print(f'Found {len(detected_markers)} markers')
+    # print('Intersections:')
+    # print(intersections)
     
     frame_walls, walls_1 = detect.detect_walls(color_wall1, frame.copy(), intersections)
     # frame_walls, walls_2 = detect.detect_walls(color_wall2, frame.copy(), intersections)
@@ -46,11 +50,14 @@ def detect_pieces():
 
     print(f'Found {len(walls_1)} walls')
     print(walls_1)
-    
-    cv2.imshow('frame', frame_walls)
 
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break
+
+    while True: 
+        cv2.imshow('frame', frame_walls)
+        # cv2.waitKey(0)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
     # cv2.destroyAllWindows()
 

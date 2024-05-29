@@ -33,18 +33,50 @@ def detect_walls(color, image, intersections):
 
         # Ignore contours that are too small or too large
 
-        #TODO: Tune these values
-        if area < 2500 or 100000 < area:
-            continue
+        # #TODO: Tune these values
+        # if area < 2600 or 3400 < area:
+        #     continue
+
+        # print(f'Area: {area}')
+
 
         # cv.minAreaRect returns:
         # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
         rect = cv2.minAreaRect(cnt)
+        cvAngle = int(rect[2])
+
+        if (cvAngle > 45):
+            cvAngle = 90
+        else :
+            cvAngle = 0
+
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+
+        if (width < height):
+            angle = 'V'
+        if (height < width): 
+            angle = 'H'
+
+        if(angle == 'V' and (width < 10 or width > 40 or height > 200 or height < 170 )) :
+            continue
+        if (angle == 'H' and (height < 10 or height > 40 or width > 200 or width < 170 )) :
+            continue
+
+        if (cvAngle == 90):
+            if (angle == 'H'):
+                angle = 'V'
+            else:
+                angle = 'H'
+
+        print(f'WIDTH: {rect[1][0]}')
+        print(f'HEIGHT: {rect[1][1]}')
+
         box = cv2.boxPoints(rect)
         box = np.int0(box)
 
         center = (int(rect[0][0]),int(rect[0][1])) 
-        angle = int(rect[2])
+     
 
         #Detect cell of the wall
         cell = detect_cell_wall(center, intersections)
@@ -54,7 +86,7 @@ def detect_walls(color, image, intersections):
 
         # Draw each contour only for visualisation purposes
         image = cv2.drawContours(image,[box],0,(0,0,255),2)
-        # image = cv2.putText(image, f"({cell[0]}, {cell[1]})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        image = cv2.putText(image, f"({int(rect[2])}, {angle}, w-{width}, h-{height})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
     return image, walls
 
@@ -78,7 +110,6 @@ def detect_player(color, image, intersections):
             player = [center, area, rect]
 
     # Now detect the cell associated with this player
-
     cell = detect_cell_player(player[0], intersections)
         
     # Draw each contour only for visualisation purposes
