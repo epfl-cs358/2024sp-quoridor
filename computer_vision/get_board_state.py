@@ -6,12 +6,12 @@ import os
 
 import pieces_detection as detect
 
-from util import get_limits
-
 IMAGE_SIZE = 300
 SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
+IMAGE_SIZE = 600
+
 
 color_wall1 = [127,47,26]
 color_wall2 = [56,74,189] 
@@ -25,7 +25,7 @@ def detect_pieces():
     walls_1 = [] # List of tuples with ((x, y), orientation) (orientation = horizontal or vertical) 
     walls_2 = [] # List of tuples with ((x, y), orientation) 
 
-    # cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
 
     # Set capture format to 'MJPG'
     # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
@@ -46,7 +46,7 @@ def detect_pieces():
     # print('Intersections:')
     # print(intersections)
     
-    frame_walls, walls_1 = detect.detect_walls(color_wall1, warped_image, intersections)
+    frame_walls, walls_1 = detect.detect_walls(color_wall1, frame.copy(), intersections)
     # frame_walls, walls_2 = detect.detect_walls(color_wall2, frame.copy(), intersections)
     # frame_piece1, player1 = detect.detect_player(color_player1, frame.copy(), intersections)
     # frame_piece2, player2 = detect.detect_player(color_player2, frame.copy(), intersections)
