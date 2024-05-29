@@ -72,8 +72,8 @@ def detect_walls(color, image, intersections):
             else:
                 angle = 'H'
 
-        print(f'WIDTH: {rect[1][0]}')
-        print(f'HEIGHT: {rect[1][1]}')
+        ##print(f'WIDTH: {rect[1][0]}')
+        ##print(f'HEIGHT: {rect[1][1]}')
 
         box = cv2.boxPoints(rect)
         box = np.int0(box)
@@ -90,6 +90,7 @@ def detect_walls(color, image, intersections):
         # Draw each contour only for visualisation purposes
         image = cv2.drawContours(image,[box],0,(0,0,255),2)
         image = cv2.putText(image, f"({angle}, w-{width}, h-{height})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        print(f"wall center is {(center[0], center[1])} for width {width} and height {height}")
     
     return image, walls
 
@@ -130,34 +131,37 @@ def detect_cell_player(center, intersections):
     cx = center[0]
     cy = center[1]
 
-    for i in range(0, len(intersections)-SIDE_LENGTH*2-1):
+    for i in range(len(intersections) - SIDE_LENGTH*2 - 1):
         # print("index is ", i)
         top_left = intersections[i+0]
         top_right = intersections[i+1]
         bottom_left = intersections[i+SIDE_LENGTH*2]
         bottom_right = intersections[i+1+SIDE_LENGTH*2]
-        # print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-        # print (" and object center is ", cx, " ", cy)
         if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-            print("x marks the spot")
-            return top_left[1][0],top_left[1][1]
+            print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
+            print(f"at index {i} intersection for top left is {intersections[i]}")
+            return top_left[1]
 
 
 def detect_cell_wall(center, intersections):
     cx = center[0]
     cy = center[1]
 
-    ## horizontal wall
-    for i in range(1, len(intersections)-SIDE_LENGTH*4-1):
+    for i in range(len(intersections) - SIDE_LENGTH*2 - 1):
         # print("index is ", i)
         top_left = intersections[i+0]
         top_right = intersections[i+1]
         bottom_left = intersections[i+SIDE_LENGTH*2]
         bottom_right = intersections[i+1+SIDE_LENGTH*2]
-        # print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  
-        #       top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ",
-        #         bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-        # print (" and object center is ", cx, " ", cy)
+        """ print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  
+              top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ",
+                bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
+        print (" and object center is ", cx, " ", cy) """
         if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-            print("x marks the spot")
-            return bottom_left[1][0],bottom_left[1][1]
+            print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
+            print(f"at index {i} intersection for top left is {intersections[i]}")
+            #cv2.circle(image, (top_left[0]), 5, (255, 255, 0), -1)
+            #cv2.circle(image, (top_right[0]), 5, (255, 255, 0), -1)
+            #cv2.circle(image, (bottom_left[0]), 5, (255, 255, 0), -1)
+            #cv2.circle(image, (bottom_right[0]), 5, (255, 255, 0), -1)
+            return top_left[1]

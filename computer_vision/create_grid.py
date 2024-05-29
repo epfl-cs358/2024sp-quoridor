@@ -13,8 +13,6 @@ WALL_SIZE = 6
 def compute_direction(point1, point2):
     vector = np.array(point1, dtype = float) - np.array(point2, dtype=float)
     length = np.linalg.norm(vector)
-    print("vector is", vector)
-    print("length is", length)
     vector /= length
     return vector, length
 
@@ -32,6 +30,24 @@ def compute_intersection(line1, line2):
     intersection_y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator
     
     return (int(intersection_x), int(intersection_y))
+
+def border_intersections(image, border, starting_point, direction, number_units, ratio):
+    unit_distance = border[0][1] / number_units
+    list_intersections = []
+    if starting_point is not None:
+        for i in range(number_units+1):
+            check_index = i % (ratio+1)
+            if check_index == 0 or check_index == ratio:
+                newPoint = starting_point + border[0][0] * (unit_distance * i) if direction == "horizontal" else starting_point - border[0][0] * (unit_distance * i)
+                newPoint = (int(newPoint[0]), int(newPoint[1]))
+                coordinate = math.floor(i/(ratio+1))
+                if direction == "horizontal":
+                    list_intersections.append((newPoint, (coordinate, border[1])))
+                else:
+                    list_intersections.append((newPoint, (border[1], coordinate)))
+                ##cv2.circle(image, (newPoint), 5, (255, 255, 0), -1)
+                ##cv2.putText(image, str(coordinate), (newPoint), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+    return list_intersections
 
 def correct_perspective(image, image_size):
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
@@ -54,6 +70,9 @@ def correct_perspective(image, image_size):
 
         for (markerCorner, markerID) in zip(corners, ids):
             marker_corners = markerCorner.reshape((4,2))
+            if markerID <= 1:
+                ## !!!!CHANGE THIS NUMBER TO CORRECT PERSPECTIVE !!!
+                marker_corners[:, 1] -= 15
             src_corners[markerID] = marker_corners[markerID]
             inner_coordinate = 3 - markerID
             inner_corners[markerID] = marker_corners[inner_coordinate]
@@ -88,8 +107,6 @@ def correct_perspective(image, image_size):
         return dst, final_inner_corners, ids
     return image, None, None
 
-
-
 def aruco_detect(image, corners, ids):
     board_corners = {}
 
@@ -123,6 +140,10 @@ def aruco_detect(image, corners, ids):
 
 def create_grid(image, board_corners, side_length, cell_size, wall_size):
     intersections = []
+    top_intersections = []
+    right_intersections = []
+    bottom_intersections = []
+    left_intersections = []
     vertical_lines = []
     ratio = cell_size//wall_size
     number_units = (ratio * side_length) + side_length -1
@@ -137,52 +158,25 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
         borders["bottom"] = (compute_direction(board_corners["bottom right"], board_corners["bottom left"]), 0)
         borders["left"] = (compute_direction(board_corners["top left"], board_corners["bottom left"]), 0)
 
-
-        for region, border in borders.items():
-            unit_distance = border[0][1] / number_units
-            starting_point = None
-            direction = None
-            if region == "top":
-                starting_point = board_corners["top left"]
-                direction = "horizontal"
-            elif region == "bottom":
-                starting_point = board_corners["bottom left"]
-                direction = "horizontal"
-            elif region == "left":
-                starting_point = board_corners["bottom left"]
-                direction = "vertical"
-            elif region == "right":
-                starting_point = board_corners["bottom right"]
-                direction = "vertical"
-
-            if starting_point is not None:
-                for i in range(number_units+1):
-                   check_index = i % (ratio+1)
-                   if check_index == 0 or check_index == ratio:
-                        newPoint = starting_point + border[0][0] * (unit_distance * i)
-                        newPoint = (int(newPoint[0]), int(newPoint[1]))
-                        coordinate = math.floor(i/(ratio+1))
-                        if direction == "horizontal":
-                           intersections.append((newPoint, (border[1], coordinate)))
-                        else:
-                           intersections.append((newPoint, (coordinate, border[1])))
-                        ##cv2.circle(image, (newPoint), 5, (255, 255, 0), -1)
-                        ##cv2.putText(image, str(coordinate), (newPoint), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        top_intersections = border_intersections(image, borders["top"], board_corners["top left"], "horizontal", number_units, ratio)
+        right_intersections = border_intersections(image, borders["right"], board_corners["top right"], "vertical", number_units, ratio)
+        bottom_intersections = border_intersections(image, borders["bottom"], board_corners["bottom left"], "horizontal", number_units, ratio)
+        left_intersections = border_intersections(image, borders["left"], board_corners["top left"], "vertical", number_units, ratio)  
     
-    if len(intersections) > 0:
+    if len(top_intersections) == number_grid_lines:
         for x in range(number_grid_lines):
-            start_point = intersections[x][0]
-            end_point = intersections[x + 2*number_grid_lines][0]
-            ##cv2.line(image, start_point, end_point, (0, 0, 255), 2)
-            coordinate = intersections[x][1][0]
+            start_point = top_intersections[x][0]
+            end_point = bottom_intersections[x][0]
+            # cv2.line(image, start_point, end_point, (0, 0, 255), 2)
+            coordinate = top_intersections[x][1][0]
             vertical_lines.append(((start_point, end_point), coordinate))
 
         for y in range(number_grid_lines):
-            start_point = intersections[y + 3*number_grid_lines][0]
-            end_point = intersections[y + number_grid_lines][0]
+            start_point = left_intersections[y][0]
+            end_point = right_intersections[y][0]
             line1 = (start_point, end_point)
-            ##cv2.line(image, start_point, end_point, (0,0,225), 2)
-            coordinate = intersections[y + 3*number_grid_lines][1][1]
+            # cv2.line(image, start_point, end_point, (0,0,225), 2)
+            coordinate = left_intersections[y][1][1]
             for i in range(number_grid_lines):
                 line2 = vertical_lines[i]
                 intersections.append((compute_intersection(line1, line2[0]), (line2[1], coordinate)))
