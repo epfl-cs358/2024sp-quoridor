@@ -154,7 +154,8 @@ Put the grabber assembly on top of the plate, screw it in place
 Screw in the electronic box.
 Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring according to the diagram. Pass the cables via the side holes (otherwise you won't be able to close the lid at the end).
 
-![alt text](<335123297-452fb32d-1a28-4367-88d5-c3750ed1e14c (1).png>)
+![335123297-452fb32d-1a28-4367-88d5-c3750ed1e14c (1) (1) (1)](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/8b67e324-da04-4d95-9206-f31da4b23159)
+
 
 # Camera arms
 
