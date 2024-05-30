@@ -13,8 +13,8 @@ WALL_SIZE = 6
 IMAGE_SIZE = 600
 
 
-color1 = [127,47,26]
-color2 = [0,0,255] 
+color1 = [140,88,46] #BGR
+color2 = [85,65,173] #BGR
 
 def detect_pieces():
 
@@ -51,16 +51,16 @@ def detect_pieces():
         print(f'Found {len(walls)} walls')
 
         # ---- FOR DEBUG AND VIZUALISATION PURPOSES --------
-        # while True: 
-        #     # cv2.imshow('frame', frame_piece1)
-        #     # cv2.imshow('frame', frame_piece2)
-        #     # cv2.imshow('frame', frame_walls1)
-        #     # cv2.imshow('frame', frame_walls2)
+        while True: 
+            cv2.imshow('frame', frame_piece1)
+            # cv2.imshow('frame', frame_piece2)
+            # cv2.imshow('frame', frame_walls1)
+            # cv2.imshow('frame', frame_walls2)
 
-        #     # cv2.waitKey(0)
+            # cv2.waitKey(0)
 
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
     # cv2.destroyAllWindows()
 

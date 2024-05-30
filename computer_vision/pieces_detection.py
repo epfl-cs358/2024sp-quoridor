@@ -100,15 +100,15 @@ def detect_player(color, image, intersections):
         area = cv2.contourArea(cnt)
         # Ignore contours that are too small or too large
         #TODO: Tune these values
-        if area < 500 or 30000 < area:
-            continue
+        # if area < 500 or 30000 < area:
+        #     continue
 
         # cv.minAreaRect returns: (center(x, y), (width, height), angle of rotation) 
         rect = cv2.minAreaRect(cnt)
         width = int(rect[1][0])
         height = int(rect[1][1])
 
-        if(width < 10 or width > 45 or height > 45 or height < 25 ) :
+        if(width < 10 or width > 50 or height > 50 or height < 10 ) :
             continue
 
         box = cv2.boxPoints(rect)
