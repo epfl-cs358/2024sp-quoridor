@@ -283,4 +283,10 @@ Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring accordin
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/fb54c6d5-6fcf-4a0f-96e7-083a5544322a)
 
 
+# The end
+
+Congratulation ! At this point, you should have the full machine assembled like this:
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/8d11d0c9-d51f-4480-bb1f-2526c2b5df83)
+
+You can now proceed with adjustements regarding the end switch positioning, as well as the camera angle for the webcam.
 
