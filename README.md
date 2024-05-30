@@ -72,6 +72,7 @@ One of each, 5mm
 
 ## Wheel plate
 -3x 3mm
+![2024-05-30-143234_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/1165d8d0-3458-4c53-b571-a77d05c8b27f)
 
 ## Stepper mount
 -1x 3mm
