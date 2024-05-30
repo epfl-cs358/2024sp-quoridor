@@ -108,14 +108,18 @@ First, screw in the wall holders pieces to the board. These parts add thickness 
 
 
 
-Next, screw in the 8 angle brackets to the board.
+Next, screw in the 8 angle brackets to the board (4 on each side).
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/b61fc97c-99ae-467f-9ce0-f964b3b5b405)
 
 Attach the V slot aluminium profiles, screwing them in place with the t-nuts
 
 Screw in the corner brackets. These help stabilizing the profiles, and at the end to mount the camera arms.
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/967656fd-ffbd-40a6-ac7b-d746e69eb5a1)
 
-Now flip the board upside down. We will use the profile as spacer.
+Now flip the board upside down, with the top side of the profile resting on your workspace. We will use the profile as spacer.
 Slide in the 3d printed boards part. Glue them. gravity will hold them in place. We used fast super-glue, but with this setup you can use a glue that takes a while to set.
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/926f89a9-e75b-4a59-b1be-628a669cf102)
+
 
 # X axis assembly (built this seperately)
 
