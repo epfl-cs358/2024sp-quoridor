@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from util import *
+from .util import *
 
 SIDE_LENGTH = 9
 CELL_SIZE = 24

@@ -1,10 +1,10 @@
 import cv2
 from PIL import Image
 import numpy as np
-from create_grid import *
+from .create_grid import *
 import os
 
-from pieces_detection import *
+from .pieces_detection import *
 
 IMAGE_SIZE = 500
 SIDE_LENGTH = 9
