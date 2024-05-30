@@ -1,6 +1,11 @@
 # ==== DON'T CHANGE AFTER THIS LINE ====
 from collections import deque
 
+
+import serial
+import time
+from computer_vision.get_board_state import detect_pieces
+
 def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
     edges = {}
     free_walls = []
@@ -205,8 +210,16 @@ def remove_free_wall(move):
             free_wall_mem.remove((position, "HORIZONTAL"))
 
 # ==== COMMUNICATION ====
-import serial
-import time
+def convertTupleToId(x, y):
+    return y * 10 + x 
+def convertWallTuplesToWalls(input, output):
+    for wall in input:
+        if(wall[1] == "H"):
+            output.append(convertTupleToId(wall[0][0], wall[0][1]), "HORIZONTAL")
+        else:
+            output.append(convertTupleToId(wall[0][0], wall[0][1]), "VERTICAL")
+
+
 ser = serial.Serial('COM6', 9600)
 init_free_walls()
 time.sleep(5)
@@ -216,16 +229,23 @@ try:
         # Read bytes from Arduino
         if ser.readable:
             received_bytes = ser.readline()
-            
+                
             # Check if any bytes were received
             if received_bytes:
                 print("Received from Arduino: ", received_bytes.decode().rstrip('\n'))
-                
+                    
                 if(received_bytes == b'Get next move\r\n'):
                     # # ==== MANAGING OF BOARD STATE ====
-                    bot_node = 4
-                    player_node = 64        
-                    board_walls = [(0, "HORIZONTAL"), (2, "HORIZONTAL")]  
+
+                    player_node_tuple, bot_node_tuple, board_walls_tuple = detect_pieces() 
+                    bot_node = convertTupleToId(bot_node_tuple[0], bot_node_tuple[1])
+                    player_node = convertTupleToId(player_node_tuple[0], player_node_tuple[1])
+                    board_walls = []
+                    print(player_node_tuple)
+                    print(bot_node_tuple)
+                    print(board_walls_tuple)
+                    convertWallTuplesToWalls(board_walls_tuple, board_walls)
+                    
                     response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
 
                     if response_message == None:
