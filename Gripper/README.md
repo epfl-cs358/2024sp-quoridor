@@ -37,10 +37,12 @@ Equipment: 3D printer, laser cutter (for plates of 5mm and 3mm thickness, or alt
 4. Slide the two claws onto the rack holder, positioning them close together.
 5. Use an Arduino to run the servo, setting it to its maximum position (180° = closed).
 6. Slide the servo on top of the rack holder. Adjust the claws slightly to ensure the teeth align correctly (this step may require some patience, precision and despair).
+7. Optional: you can stick pieces of rubber on the gripper clamp to increase adhesion (I used pieces of rubber glove).
 
 <img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/54cea055-8bae-47fc-a9ae-b04794caebf2" alt="Gripper CAD" width="200"/>
 <img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/27a740c8-3dff-44fa-bfbb-caf6837366bf" alt="Gripper CAD" width="200"/>
 <img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/dc3b6bea-cae0-42eb-8963-f6001d200c2f" alt="Gripper CAD" width="200"/>
+<img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/e7948dcd-540a-4c1a-87e1-fa2e772d19ea" alt="Gripper CAD" width="200"/>
 
 #### Moving Part:
 
@@ -74,7 +76,18 @@ Equipment: 3D printer, laser cutter (for plates of 5mm and 3mm thickness, or alt
 11. Slide the moving part to the top and fix the gear onto the servo motor. The goal is to have the last teeth of the rack engaged by the gear. (Optional: It is recommended to screw it only when everything is installed).
 12. Return to the claw assembly. Fix the gripper support servo to the bearing, applying a bit of force to secure it, and add the screws provided with the servo.
 13. Insert the servo from the claw into the gripper support servo, ensuring the cables are passed through before positioning the servo. 
-14. Add two screws to secure everything. (Optional: It is recommended to do this only when everything is installed and tested to avoid damaging the claw). 
+14. Add two screws to secure everything. (Optional: It is recommended to do this only when everything is installed and tested to avoid damaging the claw).
+
+## Wiring:
+
+Due to their high power consumption, all 3 servos must be powered by an external power source of at least 5v/3amp.
+Here is the electrical diagram to connect them to a Ramps 1.6
+
+![Image](https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/452fb32d-1a28-4367-88d5-c3750ed1e14c)
+
+<img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/cecb0a00-1679-444f-9da6-6fd5bd09c6a7" alt="Wiring" width="200"/>
+<img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/ff0c3b6e-416e-4b07-a10a-85d1822ccaaa" alt="Wiring" width="200"/>
+<img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/adaf3201-f865-4431-a51c-ff7efeda43e7" alt="Wiring" width="200"/>
 
 ## Improvements:
 
