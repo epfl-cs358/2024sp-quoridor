@@ -20,6 +20,9 @@ These two sub assemblies can be build in parallel and assembled at the end. The 
 - 10x in red
 - 10x in blue
 
+  Print in this direction to get the best results (no supports necessary)
+![2024-05-30-134702_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/3d09f210-a7a0-4fad-8aeb-ed1b799f9204)
+
 ## Player pawns
 
 - 1x in red
@@ -32,15 +35,23 @@ These two sub assemblies can be build in parallel and assembled at the end. The 
 
 ## Angle brackets
 - 15x
+![2024-05-30-134950_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/f6f29c9d-7ff3-446a-8e86-82d14438d61e)
 
 ## Corner brackets
 
 Warning, these are symetrical pieces !
 One of each
+![2024-05-30-135919_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/6acdac3e-2437-45e8-a4b9-cae5a715761a)
+
 
 ## End pulley
 
 - 2x
+
+## Optionnal : 3D printed T-nuts
+
+The metallic openbuilds t-nuts are recommended. We 3d printed those because we forgot to order them. We ended up doing a slightly modified version of the original openbuilds CAD model with a bigger diameter, that works better when 3d printing
+![2024-05-30-135202_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/5f25eb8e-318d-4ce0-9474-89f75a60be18)
 
 # Laser cutting
 
@@ -69,9 +80,7 @@ One of each, 5mm
 
 - 4x 3mm
 
-## Optionnal : 3D printed T-nuts
 
-The metallic openbuilds t-nuts are recommended. We 3d printed those because we forgot to order them. We ended up doing a slightly modified version of the original openbuilds CAD model, that works better with 3d printers.
 
 ## What needs improvements
 
@@ -85,7 +94,10 @@ We also a noticed a crack developing on one of the wheel plate
 
 With all the parts cut and printed, we are ready for assembly (note that you can also 3d print as you go, since the three pieces for the board for example take quite long to print)
 
-First, scre in the wall holders pieces to the board. These parts add thickness to the board, so doing this first helps stabilizing it a bit more (MDF tends to bend with time).
+First, screw in the wall holders pieces to the board. These parts add thickness to the board, so doing this first helps stabilizing it a bit more (MDF tends to bend with time).
+![2024-05-30-140227_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/d8a8b463-446d-4e9d-a4eb-157b498464bd)
+
+
 
 Next, screw in the 8 angle brackets to the board.
 
