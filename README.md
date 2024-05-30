@@ -1,5 +1,14 @@
 # 2024sp-quoridor
 
+These instructions are structured in 2 sub-assemblies:
+
+- The grabber
+- The machine
+  - Main part
+  - Y axis rail
+
+These two sub assemblies can be build in parallel and assembled at the end. The design is such that only two screws hold the grabber to the rest of the assembly, so it's quite easy to modify the grabber seperately.
+  
 # 3D printed parts
 
 ## Camera mount
