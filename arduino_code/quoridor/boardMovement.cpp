@@ -42,21 +42,31 @@ int rotationSpeed = 10;
 int gripperSpeed = 10;
 
 //Starting position
-int linearStart = 90;
+int linearStart = 100;
 int rotationStart = 0;
 
 
 //End position
 int linearEnd = 0;
+int linearMid = 55;
 int rotationEnd = 125;
 
 //gripper position
-int gripperOpen = 130;
+int gripperFullOpen = 100;
+int gripperMidOpen = 130;
 int gripperClose = 180;
-int gripperWall = 168;
+int gripperWall = 160;
 int gripperPawn = 165;
 
-void down(){
+void downMid(){
+  for (linearPos; linearPos >= linearMid; linearPos -= 1) {
+    linearServo.write(linearPos);
+    delay(linearSpeed);
+  }
+  delay(100);
+}
+
+void downFull(){
   for (linearPos; linearPos >= linearEnd; linearPos -= 1) {
     linearServo.write(linearPos);
     delay(linearSpeed);
@@ -64,8 +74,16 @@ void down(){
   delay(100);
 }
 
-void up(){
+void upFull(){
     for (linearPos; linearPos <= linearStart; linearPos += 1) {
+    linearServo.write(linearPos);
+    delay(linearSpeed);
+  }
+  delay(100);
+}
+
+void upMid(){
+    for (linearPos; linearPos <= linearMid; linearPos += 1) {
     linearServo.write(linearPos);
     delay(linearSpeed);
   }
@@ -92,7 +110,7 @@ void grabWall(){
     gripperServo.write(gripperPos);
     delay(gripperSpeed);
   }
-  delay(100);
+  delay(500);
 }
 
 void grabPawn(){
@@ -103,8 +121,25 @@ void grabPawn(){
   delay(100);
 }
 
-void release(){
-  for (gripperPos; gripperPos >= gripperOpen; gripperPos -= 1) {
+void openMid(){
+  for (gripperPos; gripperPos >= gripperMidOpen; gripperPos -= 1) {
+    gripperServo.write(gripperPos);
+    delay(gripperSpeed);
+  }
+  delay(100);
+}
+
+
+void closeMid(){
+  for (gripperPos; gripperPos <= gripperMidOpen; gripperPos += 1) {
+    gripperServo.write(gripperPos);
+    delay(gripperSpeed);
+  }
+  delay(100);
+}
+
+void openFull(){
+  for (gripperPos; gripperPos >= gripperFullOpen; gripperPos -= 1) {
     gripperServo.write(gripperPos);
     delay(gripperSpeed);
   }
@@ -128,8 +163,8 @@ void setupGrabber() {
   rotationServo.attach(5);
 
   //Set the gripper to the right starting position
-  release();
-  up();
+  //openMid();
+  upFull();
   rotate(0);
 
   delay(1000);
@@ -202,23 +237,30 @@ void playMove(MoveData move_data){
 
   moveToBoardPosition(move_data.old_position, move_data.piece_type);
   rotateTo(move_data.old_orientation);
-  lowerClaw(move_data.piece_type);
+  //lowerClaw(move_data.piece_type);
+  downMid();
+  openFull();
+  downFull();
+
   closeClaw(move_data.piece_type);
-  raiseClaw(move_data.piece_type);
+  upFull();
 
   moveToBoardPosition(move_data.new_position, move_data.piece_type);
   rotateTo(move_data.new_orientation);
-  lowerClaw(move_data.piece_type);
-  openClaw();
-  raiseClaw(move_data.piece_type);
+  //lowerClaw(move_data.piece_type);
+  //openClaw();
+  downFull();
+  openFull();
+  upMid();
+  closeMid();
+  upFull();
+  //raiseClaw(move_data.piece_type);
 
   rotateTo(HORIZONTAL);
   goToOrigin();
 
   X.disableOutputs();
   Y.disableOutputs();
-
-  
 }
 
 void moveToBoardPosition(BoardPosition pos, PieceType type){
@@ -239,20 +281,20 @@ void moveToBoardPosition(BoardPosition pos, PieceType type){
 
 void openClaw(){
   if(isClawClose){
-    release();
+    //release();
     isClawClose = false; 
   }
 }
 
 void closeClaw(PieceType type){
-  if(!isClawClose){
+  //if(!isClawClose){
     if(type == PLAYER){
       grabPawn();
     }else{
       grabWall();
     } 
-  isClawClose = true; 
-  }
+  //isClawClose = true; 
+  //}
 }
 
 void rotateTo(WallOrientation orientation){
@@ -268,14 +310,14 @@ void rotateTo(WallOrientation orientation){
 
 void lowerClaw(PieceType type){
   if(isClawHigh){
-    down();
+    //down();
     isClawHigh = false;
   }
 }
 
 void raiseClaw(PieceType type){
   if(!isClawHigh){
-    up();
+    //up();
     isClawHigh = true;
   }
 }

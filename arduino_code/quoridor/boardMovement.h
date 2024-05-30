@@ -10,8 +10,8 @@
 #define StepperYPin2 61
 #define StepperYPin3 56
 
-#define Speed 1400
-#define Acceleration 9000
+#define Speed 20 //1400
+#define Acceleration 20 //9000
 
 #define XMinStopPin 3
 #define YMinStopPin 14
