@@ -3,7 +3,7 @@ import numpy as np
 
 from util import get_limits
 
-SIDE_LENGTH = 9
+SIDE_LENGTH = 8
 CELL_SIZE = 24
 WALL_SIZE = 6
 
@@ -16,7 +16,7 @@ color_player2 = []
 
 def detect_color(color, frame):
     hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lowerLimit, upperLimit = get_limits(color=color, sensitivity=30)
+    lowerLimit, upperLimit = get_limits(color, sensitivity=30)
     return cv2.inRange(hsvImage, lowerLimit, upperLimit)
 
 
@@ -26,34 +26,70 @@ def detect_walls(color, image, intersections):
 
     # Find contours
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(f'Found {len(contours)} contours')
     walls = []
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
-
         # Ignore contours that are too small or too large
-
         #TODO: Tune these values
+<<<<<<< HEAD
         # if area < 3700 or 100000 < area:
         #     continue
+=======
+        if area < 500 or 30000 < area:
+            continue
+>>>>>>> 8c21676418072cc158f900b2578dca140b74f001
 
-        # cv.minAreaRect returns:
-        # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
+        # cv.minAreaRect returns: (center(x, y), (width, height), angle of rotation) 
         rect = cv2.minAreaRect(cnt)
+        cvAngle = int(rect[2])
+
+        if (cvAngle > 45):
+            cvAngle = 90
+        else :
+            cvAngle = 0
+
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+
+        if (width == height):
+            continue
+
+        if (width < height):
+            angle = 'V'
+        if (height < width): 
+            angle = 'H'
+
+        if(angle == 'V' and (height > 150 or height < 100 )) :
+            continue
+        if (angle == 'H' and (width > 150 or width < 100 )) :
+            continue
+
+        if (cvAngle == 90):
+            if (angle == 'H'):
+                angle = 'V'
+            else:
+                angle = 'H'
+
+        ##print(f'WIDTH: {rect[1][0]}')
+        ##print(f'HEIGHT: {rect[1][1]}')
+
         box = cv2.boxPoints(rect)
         box = np.int0(box)
 
         center = (int(rect[0][0]),int(rect[0][1])) 
-        angle = int(rect[2])
+     
 
         #Detect cell of the wall
-        cell = detect_cell_wall(center, intersections)
+        cell = detect_cell_wall(image, center, intersections)
 
+        # walls.append((cell,angle))
         walls.append((cell,angle))
+
         # Draw each contour only for visualisation purposes
-        image = cv2.drawContours(image,[box],0,color,2)
-        image = cv2.putText(image, f"({cell[0]}, {cell[1]})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        image = cv2.drawContours(image,[box],0,(0,0,255),2)
+        image = cv2.putText(image, f"({angle}, w-{width}, h-{height})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        print(f"wall center is {(center[0], center[1])} for width {width} and height {height}")
     
     return image, walls
 
@@ -64,28 +100,34 @@ def detect_player(color, image, intersections):
     # Find contours
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     print(f'Found {len(contours)} contours')
-    player = [0,0,0]
+    cell = [0,0]
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
+        # Ignore contours that are too small or too large
+        #TODO: Tune these values
+        if area < 500 or 30000 < area:
+            continue
+
+        # cv.minAreaRect returns: (center(x, y), (width, height), angle of rotation) 
         rect = cv2.minAreaRect(cnt)
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+
+        if(width < 10 or width > 45 or height > 45 or height < 25 ) :
+            continue
+
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
+
         center = (int(rect[0][0]),int(rect[0][1])) 
 
-        #Keep the larger area only 
-        if (area > player[1]) :
-            player = [center, area, rect]
-
-    # Now detect the cell associated with this player
-
-    cell = detect_cell_player(player[0], intersections)
+        # Now detect the cell associated with this player
+        cell = detect_cell_player(center, intersections)
+        print(f'Cell: {cell}')
         
-    # Draw each contour only for visualisation purposes
-    box = cv2.boxPoints(player[2])
-    box = np.int0(box)
-    image = cv2.drawContours(image,[box],0,color,2)
-    image = cv2.putText(image, f"({cell[0]}, {cell[1]})", (player[0][0], player[0][1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
+        # Draw each contour only for visualisation purposes
+        image = cv2.drawContours(image,[box],0,(0, 255, 0),2)
 
     return image, cell
 
@@ -95,46 +137,37 @@ def detect_cell_player(center, intersections):
     cx = center[0]
     cy = center[1]
 
-    for i in range(0, len(intersections)-SIDE_LENGTH*2-1):
-        print("index is ", i)
+    for i in range(len(intersections) - SIDE_LENGTH*2 - 1):
+        # print("index is ", i)
         top_left = intersections[i+0]
         top_right = intersections[i+1]
         bottom_left = intersections[i+SIDE_LENGTH*2]
         bottom_right = intersections[i+1+SIDE_LENGTH*2]
-        print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-        print (" and object center is ", cx, " ", cy)
         if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-            print("x marks the spot")
-            return top_left[1][0],top_left[1][1]
+            print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
+            print(f"at index {i} intersection for top left is {intersections[i]}")
+            return top_left[1]
 
 
-def detect_cell_wall(center, orientation, intersections):
+def detect_cell_wall(image, center, intersections):
     cx = center[0]
     cy = center[1]
 
-    ## horizontal wall
-    if orientation == "HORIZONTAL":
-        for i in range(SIDE_LENGTH*2, len(intersections)-SIDE_LENGTH*4-1):
-            print("index is ", i)
-            top_left = intersections[i+0]
-            top_right = intersections[i+1]
-            bottom_left = intersections[i+SIDE_LENGTH*2]
-            bottom_right = intersections[i+1+SIDE_LENGTH*2]
-            print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-            print (" and object center is ", cx, " ", cy)
-            if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-                print("x marks the spot")
-                return bottom_left[1][0],bottom_left[1][1]
-            
-    else:
-        for i in range(1, len(intersections)-SIDE_LENGTH*2-2):
-            print("index is ", i)
-            top_left = intersections[i+0]
-            top_right = intersections[i+1]
-            bottom_left = intersections[i+SIDE_LENGTH*2]
-            bottom_right = intersections[i+1+SIDE_LENGTH*2]
-            print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ", bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-            print (" and object center is ", cx, " ", cy)
-            if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-                print("x marks the spot")
-                return top_left[1][0],top_left[1][1]
+    for i in range(len(intersections) - SIDE_LENGTH*2 - 1):
+        # print("index is ", i)
+        top_left = intersections[i+0]
+        top_right = intersections[i+1]
+        bottom_left = intersections[i+SIDE_LENGTH*2]
+        bottom_right = intersections[i+1+SIDE_LENGTH*2]
+        """ print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  
+              top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ",
+                bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
+        print (" and object center is ", cx, " ", cy) """
+        if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
+            print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
+            print(f"at index {i} intersection for top left is {intersections[i]}")
+            """ cv2.circle(image, (top_left[0]), 5, (255, 255, 0), -1)
+            cv2.circle(image, (top_right[0]), 5, (255, 255, 0), -1)
+            cv2.circle(image, (bottom_left[0]), 5, (255, 255, 0), -1)
+            cv2.circle(image, (bottom_right[0]), 5, (255, 255, 0), -1) """
+            return top_left[1]
