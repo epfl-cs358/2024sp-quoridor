@@ -94,8 +94,6 @@ Warning : follow precisely this order, so you don't need to dissassemble sub-ass
 Mount the wheels to the wheel plate (this is the plate we will later mount the grabber to)
 Slide the wheels+plate assembly to the middle of the profile.
 
-
-
 Mount the end pulley plates on both side on end of the profile
 Mount the stepper pully plate on the other side
 
@@ -105,6 +103,7 @@ Mount the angle bracket to the v-slot. The placement is simple : on each end,  t
 
 Mount the wheels to the plate, sliding the assembly.
 
+# Combine x axis assembly with the rest
 Now we can mount the stepper on the x axis with the belt. Attach the belt to the plate going above the profile like this:
 
 ![signal-2024-05-30-131015](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/f2b83ba8-ecee-4d5d-bf38-fe47de7ae71f)
@@ -115,6 +114,15 @@ Attach the Y stepper to the stepper motor plate, setup the belt but don't attach
 
 Put the grabber assembly on top of the plate, scew it in place
 
-
 Screw in the  electronic box.
-Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring according to the diagram. Pass the cables via the side holes (otherwise you won't be able to close the lid at the end)
+Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring according to the diagram. Pass the cables via the side holes (otherwise you won't be able to close the lid at the end).
+
+# Camera arms
+
+Screw in the arms to the angle brackets
+Connect bot arms together
+Mount the camera using the clamp
+
+Attach the cable chain to the grabber's wires. This is not a strictly mandatory step, but it helps relieving stress from the cables.
+
+
