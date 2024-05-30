@@ -85,6 +85,8 @@ Here is the electrical diagram to connect them to a Ramps 1.6
 
 ![Image](https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/452fb32d-1a28-4367-88d5-c3750ed1e14c)
 
+1 is the gripper servo, 2 is the rotation servo and 3 is the servo of the linear actuator.
+
 <img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/cecb0a00-1679-444f-9da6-6fd5bd09c6a7" alt="Wiring" width="200"/>
 <img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/ff0c3b6e-416e-4b07-a10a-85d1822ccaaa" alt="Wiring" width="200"/>
 <img src="https://github.com/epfl-cs358/2024sp-quoridor/assets/50048835/adaf3201-f865-4431-a51c-ff7efeda43e7" alt="Wiring" width="200"/>
