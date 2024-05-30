@@ -14,6 +14,7 @@ These two sub assemblies can be build in parallel and assembled at the end. The 
 ## Camera mount
 - 1x main part
 - 1x camera clamp
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/adbbcf64-3641-47dd-b6e8-a11756d23917)
 
 ## Walls
 
@@ -39,8 +40,6 @@ These two sub assemblies can be build in parallel and assembled at the end. The 
 - 1x "little square"
   ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/a94eaf2d-1b7b-4fbe-9d79-d3208f63316c)
 
-
-
 ## Angle brackets
 - 15x
 ![2024-05-30-134950_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/f6f29c9d-7ff3-446a-8e86-82d14438d61e)
@@ -51,10 +50,10 @@ Warning, these are symetrical pieces !
 One of each
 ![2024-05-30-135919_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/6acdac3e-2437-45e8-a4b9-cae5a715761a)
 
-
 ## End pulley
 
 - 2x
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/8f19bba7-aa8f-4a38-b836-9c100816a6ef)
 
 ## Optionnal : 3D printed T-nuts
 
@@ -74,22 +73,21 @@ The metallic openbuilds t-nuts are recommended. We 3d printed those because we f
 ## In acrylic
 
 ## Camera arms
-
-Warning, these are symetrical pieces !
-One of each, 5mm
+- 2x, 5mm 
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/afd10105-d49e-4a6c-a836-ce99f082970e)
 
 ## Wheel plate
 -3x 3mm
 ![2024-05-30-143234_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/1165d8d0-3458-4c53-b571-a77d05c8b27f)
 
-## Stepper mount
--1x 3mm
+## Stepper mount plate
+-2x 3mm
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/90b7559e-7e34-49a1-b51c-d225ff4424ad)
 
 ## End pulley bracket
 
-- 4x 3mm
-
-
+- 4x 3mm (Two are used per axis)
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/07afd105-28bb-4ac9-81d3-f5e6cf29272b)
 
 ## What needs improvements
 
@@ -106,8 +104,6 @@ With all the parts cut and printed, we are ready for assembly (note that you can
 First, screw in the wall holders pieces to the board. These parts add thickness to the board, so doing this first helps stabilizing it a bit more (MDF tends to bend with time).
 ![2024-05-30-140227_1920x1080_scrot](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/d8a8b463-446d-4e9d-a4eb-157b498464bd)
 
-
-
 Next, screw in the 8 angle brackets to the board (4 on each side).
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/b61fc97c-99ae-467f-9ce0-f964b3b5b405)
 
@@ -120,7 +116,6 @@ Now flip the board upside down, with the top side of the profile resting on your
 Slide in the 3d printed boards part. Glue them. gravity will hold them in place. We used fast super-glue, but with this setup you can use a glue that takes a while to set.
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/926f89a9-e75b-4a59-b1be-628a669cf102)
 
-
 # X axis assembly (built this seperately)
 
 Warning : follow precisely this order, so you don't need to dissassemble sub-assemblies down the line
@@ -129,13 +124,18 @@ Mount the wheels to the wheel plate (this is the plate we will later mount the g
 Slide the wheels+plate assembly to the middle of the profile.
 
 Mount the end pulley plates on both side on end of the profile
-Mount the stepper pully plate on the other side
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/99bcf9c4-67c1-4e92-97bd-990249971dec)
+
+Mount the stepper mounting plate on the other side
+![WhatsApp Image 2024-05-30 at 15 28 48](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/d836d0ac-d9d2-471d-9bea-b0edb8eada4c)
 
 Mount the angle bracket to the v-slot. The placement is simple : on each end,  they are next to each other, sarting at the end of the profile.
 
-## Do this two times:
+## Do this two times, for both sides:
 
-Mount the wheels to the plate, sliding the assembly.
+Mount the wheels to the plate and then slide the assembled carriage.
+
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/102ed1bd-8770-4ed6-bd57-feec15d27577)
 
 # Combine x axis assembly with the rest
 Now we can mount the stepper on the x axis with the belt. Attach the belt to the plate going above the profile like this:
@@ -166,5 +166,8 @@ Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring accordin
 
 3. Mount the camera using the clamp
 ![e45bf986-da7e-4e04-8ccc-194e948133e6](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/98a9b2f5-1321-48be-bbb9-9f7cb9f2beeb)
+
+# Button
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/fb54c6d5-6fcf-4a0f-96e7-083a5544322a)
 
 
