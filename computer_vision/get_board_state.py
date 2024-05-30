@@ -19,18 +19,22 @@ color2 = [85,65,173] #BGR
 # color1 = [127,47,26]
 # color2 = [0,0,255]
 
-def detect_pieces():
+def setup_camera():
+    cap = cv2.VideoCapture(0)
+
+    # Set capture format to 'MJPG'
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
+
+    return cap
+
+def detect_pieces(cap=setup_camera()):
 
     player1 = None # Tuple with (x, y) coordinates 
     player2 = None # Tuple with (x, y) coordinates 
     walls_1 = [] # List of tuples with ((x, y), orientation) (orientation = H or V) 
     walls_2 = [] # List of tuples with ((x, y), orientation) 
 
-    cap = cv2.VideoCapture(0)
-
-    # Set capture format to 'MJPG'
-    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
-
+    
     while player1 == None or player2 == None:
 
         ret = False
@@ -58,20 +62,21 @@ def detect_pieces():
         # print(f'Found {len(walls)} walls')
 
         # ---- FOR DEBUG AND VIZUALISATION PURPOSES --------
-        # while True: 
-        #     # print(player2)
-        #     # cv2.imshow('frame', frame_piece2)
-        #     # cv2.imshow('frame', frame_piece2)
-        #     # cv2.imshow('frame', frame_walls1)
-        #     # cv2.imshow('frame', frame_walls2)
+        while True: 
+            # print(player2)
+            # cv2.imshow('frame', frame_piece2)
+            # cv2.imshow('frame', frame_piece2)
+            # cv2.imshow('frame', frame_walls1)
+            cv2.imshow('frame', frame_walls2)
 
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break 
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break 
 
     # cv2.destroyAllWindows()
 
     return player1, player2, walls
 
 if __name__ == "__main__":
-    p1, p2, w = detect_pieces()
+    cap = setup_camera()
+    p1, p2, w = detect_pieces(cap)
     
