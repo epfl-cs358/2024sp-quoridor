@@ -6,9 +6,9 @@
 #define wallOffsetOnSideMM (boardSquaresLengthMM + boardSquaresSpacingMM)
 
 //RECALCULATE WHEN ADDING THE HEAD
-#define boardCornerLowerXStep -475
-#define boardCornerHigherXStep -3075
-#define boardCornerLowerYStep 25
+#define boardCornerLowerXStep -400
+#define boardCornerHigherXStep -3050
+#define boardCornerLowerYStep 225
 #define boardCornerHigherYStep (abs(boardCornerLowerXStep - boardCornerHigherXStep) + boardCornerLowerYStep)
 #define boardFullLengthStep (boardCornerHigherYStep - boardCornerLowerYStep)
 

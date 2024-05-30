@@ -35,8 +35,8 @@ def detect_walls(color, image, intersections):
         # Ignore contours that are too small or too large
 
         #TODO: Tune these values
-        if area < 3700 or 100000 < area:
-            continue
+        # if area < 3700 or 100000 < area:
+        #     continue
 
         # cv.minAreaRect returns:
         # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)

@@ -124,8 +124,8 @@ void setupGrabber() {
   delay(100);
 
   linearServo.attach(11);
-  rotationServo.attach(5);
   gripperServo.attach(6);
+  rotationServo.attach(5);
 
   //Set the gripper to the right starting position
   release();
@@ -155,9 +155,8 @@ void setupMotors() {
   setupGrabber();
 
   Serial.begin(9600);
+  delay(1000);
   Serial.println("START");
-
-  delay(3000);
 }
 
 void forceStopMotors(){
@@ -313,11 +312,13 @@ void calibrateMotors() {
     X.move(CALIBRATION_STEP);
     X.run();
   }
+  Serial.println("0 for X");
 
   while (!digitalRead(YMinStopPin)) {
     Y.move(-CALIBRATION_STEP);
     Y.run();
   }
+  Serial.println("0 for Y");
 
   X.setSpeed(Speed);
   Y.setSpeed(Speed);

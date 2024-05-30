@@ -16,7 +16,7 @@
 #define XMinStopPin 3
 #define YMinStopPin 14
 #define CALIBRATION_SPEED 1400
-#define CALIBRATION_STEP 18
+#define CALIBRATION_STEP 5
 
 #define ServoClawPin 1
 #define ServoRotationPin 1
