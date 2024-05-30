@@ -31,7 +31,15 @@ These two sub assemblies can be build in parallel and assembled at the end. The 
 ## Board
 
 - 2x "long"
+  ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/ce00cc08-4ec2-49a2-a95a-216b0ae48254)
+
 - 1x "square"
+  ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/45a8fca4-3df0-4f03-a79d-38b1126cae2c)
+
+- 1x "little square"
+  ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/a94eaf2d-1b7b-4fbe-9d79-d3208f63316c)
+
+
 
 ## Angle brackets
 - 15x
@@ -130,23 +138,29 @@ Now we can mount the stepper on the x axis with the belt. Attach the belt to the
 
 ![signal-2024-05-30-131015](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/f2b83ba8-ecee-4d5d-bf38-fe47de7ae71f)
 
-Slide in the end switch mount. Tighten it so it does not move, but don't try to be precise with regards to the adjustments
+Slide in the end switch mount. Tighten it so it does not move, but don't try to be precise with regards to the adjustments. Adjustements are done when everything is in place.
+
+![9f54f568-a379-4a69-852f-7c88d7756aae](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/8f4c6994-8b22-4654-b50b-14ccc19d767d)
 
 Attach the Y stepper to the stepper motor plate, setup the belt but don't attach it to the grabber plate yet.
 
-Put the grabber assembly on top of the plate, scew it in place
+Put the grabber assembly on top of the plate, screw it in place
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/64d5549d-1376-4417-9e9c-a55415f60f21)
 
-Screw in the  electronic box.
+Screw in the electronic box.
 Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring according to the diagram. Pass the cables via the side holes (otherwise you won't be able to close the lid at the end).
 
 ![alt text](<335123297-452fb32d-1a28-4367-88d5-c3750ed1e14c (1).png>)
 
 # Camera arms
 
-Screw in the arms to the angle brackets
-Connect bot arms together
-Mount the camera using the clamp
+1. Screw in the arms to the angle brackets
+![WhatsApp Image 2024-05-30 at 14 55 10](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/79f65ac9-f04f-4855-94b9-5f24ccd53015)
 
-Attach the cable chain to the grabber's wires. This is not a strictly mandatory step, but it helps relieving stress from the cables.
+2. Connect bot arms together
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/15dd732c-9721-412f-9e0e-d9e180cd206d)
+
+3. Mount the camera using the clamp
+![e45bf986-da7e-4e04-8ccc-194e948133e6](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/98a9b2f5-1321-48be-bbb9-9f7cb9f2beeb)
 
 
