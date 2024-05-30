@@ -1,10 +1,10 @@
 import cv2
 from PIL import Image
 import numpy as np
-from .create_grid import *
+from create_grid import *
 import os
 
-from .pieces_detection import *
+from pieces_detection import *
 
 IMAGE_SIZE = 500
 SIDE_LENGTH = 9
@@ -15,6 +15,9 @@ IMAGE_SIZE = 600
 
 color1 = [140,88,46] #BGR
 color2 = [85,65,173] #BGR
+
+# color1 = [127,47,26]
+# color2 = [0,0,255]
 
 def detect_pieces():
 
@@ -35,9 +38,9 @@ def detect_pieces():
             ret, frame = cap.read()
     
         # USED WHEN DEBUGGING WHILE NOT AT DLL with picture of the board stored
-        """ script_dir = os.path.dirname(os.path.abspath(__file__))
-        image_dir = os.path.join(script_dir, "image.png")
-        frame = cv2.imread(image_dir, cv2.IMREAD_COLOR) """
+        # script_dir = os.path.dirname(os.path.abspath(__file__))
+        # image_dir = os.path.join(script_dir, "image.png")
+        # frame = cv2.imread(image_dir, cv2.IMREAD_COLOR)
 
         warped_img, intersections = game_board(frame.copy(),IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
         
@@ -48,29 +51,27 @@ def detect_pieces():
 
         walls = walls_1 + walls_2
 
-        print(f'Found {len(walls)} walls')
+        print(player1)
+        print(player2)
+        print(walls)
+
+        # print(f'Found {len(walls)} walls')
 
         # ---- FOR DEBUG AND VIZUALISATION PURPOSES --------
-        """ while True: 
-            cv2.imshow('frame', frame_piece1)
-            cv2.imshow('frame', frame_piece2)
-            cv2.imshow('frame', frame_walls1)
-            cv2.imshow('frame', frame_walls2)
+        # while True: 
+        #     # print(player2)
+        #     # cv2.imshow('frame', frame_piece2)
+        #     # cv2.imshow('frame', frame_piece2)
+        #     # cv2.imshow('frame', frame_walls1)
+        #     # cv2.imshow('frame', frame_walls2)
 
-            cv2.waitKey(0)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break """
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break 
 
     # cv2.destroyAllWindows()
-
-    print(player1)
-    print(player2)
 
     return player1, player2, walls
 
 if __name__ == "__main__":
     p1, p2, w = detect_pieces()
-    print(p1)
-    print(p2)
-    print(w)
+    
