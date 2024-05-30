@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from util import get_limits
+from .util import *
 
 SIDE_LENGTH = 8
 CELL_SIZE = 24
@@ -84,7 +84,7 @@ def detect_walls(color, image, intersections):
         # Draw each contour only for visualisation purposes
         image = cv2.drawContours(image,[box],0,(0,0,255),2)
         image = cv2.putText(image, f"({angle}, w-{width}, h-{height})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        print(f"wall center is {(center[0], center[1])} for width {width} and height {height}")
+        # print(f"wall center is {(center[0], center[1])} for width {width} and height {height}")
     
     return image, walls
 
@@ -94,7 +94,7 @@ def detect_player(color, image, intersections):
     
     # Find contours
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(f'Found {len(contours)} contours')
+    # print(f'Found {len(contours)} contours')
     cell = [0,0]
 
     for cnt in contours:
@@ -119,7 +119,7 @@ def detect_player(color, image, intersections):
 
         # Now detect the cell associated with this player
         cell = detect_cell_player(center, intersections)
-        print(f'Cell: {cell}')
+        # print(f'Cell: {cell}')
         
         # Draw each contour only for visualisation purposes
         image = cv2.drawContours(image,[box],0,(0, 255, 0),2)

@@ -1,10 +1,10 @@
 import cv2
 from PIL import Image
 import numpy as np
-import create_grid as grid
+from .create_grid import *
 import os
 
-import pieces_detection as detect
+from .pieces_detection import *
 
 IMAGE_SIZE = 500
 SIDE_LENGTH = 9
@@ -28,7 +28,7 @@ def detect_pieces():
     # Set capture format to 'MJPG'
     cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m', 'j', 'p', 'g'))
 
-    while player1 == None or player2 == None or walls_1 == [] or walls_2 == []:
+    while player1 == None or player2 == None:
 
         ret = False
         while not ret:
@@ -39,12 +39,12 @@ def detect_pieces():
         image_dir = os.path.join(script_dir, "image.png")
         frame = cv2.imread(image_dir, cv2.IMREAD_COLOR) """
 
-        warped_img, intersections = grid.game_board(frame.copy(),IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
+        warped_img, intersections = game_board(frame.copy(),IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
         
-        frame_walls1, walls_1 = detect.detect_walls(color1, warped_img.copy(), intersections)
-        frame_walls2, walls_2 = detect.detect_walls(color2, warped_img.copy(), intersections)
-        frame_piece1, player1 = detect.detect_player(color1, warped_img.copy(), intersections)
-        frame_piece2, player2 = detect.detect_player(color2, warped_img.copy(), intersections)
+        frame_walls1, walls_1 = detect_walls(color1, warped_img.copy(), intersections)
+        frame_walls2, walls_2 = detect_walls(color2, warped_img.copy(), intersections)
+        frame_piece1, player1 = detect_player(color1, warped_img.copy(), intersections)
+        frame_piece2, player2 = detect_player(color2, warped_img.copy(), intersections)
 
         walls = walls_1 + walls_2
 
@@ -63,6 +63,9 @@ def detect_pieces():
                 break """
 
     # cv2.destroyAllWindows()
+
+    print(player1)
+    print(player2)
 
     return player1, player2, walls
 

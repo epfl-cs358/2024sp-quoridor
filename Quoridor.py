@@ -1,6 +1,11 @@
 # ==== DON'T CHANGE AFTER THIS LINE ====
 from collections import deque
 
+
+import serial
+import time
+from computer_vision.get_board_state import detect_pieces
+
 def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
     edges = {}
     free_walls = []
@@ -214,9 +219,6 @@ def convertWallTuplesToWalls(input, output):
         else:
             output.append(convertTupleToId(wall[0][0], wall[0][1]), "VERTICAL")
 
-import serial
-import time
-from computer_vision.get_board_state import detect_pieces
 
 ser = serial.Serial('COM6', 9600)
 init_free_walls()
@@ -235,10 +237,13 @@ try:
                 if(received_bytes == b'Get next move\r\n'):
                     # # ==== MANAGING OF BOARD STATE ====
 
-                    bot_node_tuple, player_node_tuple, board_walls_tuple = detect_pieces() 
+                    player_node_tuple, bot_node_tuple, board_walls_tuple = detect_pieces() 
                     bot_node = convertTupleToId(bot_node_tuple[0], bot_node_tuple[1])
                     player_node = convertTupleToId(player_node_tuple[0], player_node_tuple[1])
                     board_walls = []
+                    print(player_node_tuple)
+                    print(bot_node_tuple)
+                    print(board_walls_tuple)
                     convertWallTuplesToWalls(board_walls_tuple, board_walls)
                     
                     response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
