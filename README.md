@@ -139,6 +139,8 @@ Put the grabber assembly on top of the plate, scew it in place
 Screw in the  electronic box.
 Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring according to the diagram. Pass the cables via the side holes (otherwise you won't be able to close the lid at the end).
 
+![alt text](<335123297-452fb32d-1a28-4367-88d5-c3750ed1e14c (1).png>)
+
 # Camera arms
 
 Screw in the arms to the angle brackets
