@@ -125,7 +125,7 @@ def detect_player(color, image, intersections, vis_img):
         vis_img = cv2.drawContours(vis_img,[box],0,(0, 255, 0),2)
         
 
-    return image, cell
+    return vis_img, cell
 
 
 # given the center coordinates of the detected player and all the grid intersections points, find the game-coordinates of the player
