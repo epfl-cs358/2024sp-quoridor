@@ -226,7 +226,7 @@ Now flip the board upside down, with the top side of the profile resting on your
 Slide in the 3d printed boards part. Glue them. gravity will hold them in place. We used fast super-glue, but with this setup you can use a glue that takes a while to set.
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/926f89a9-e75b-4a59-b1be-628a669cf102)
 
-# X axis assembly (built this seperately)
+## X axis assembly (built this seperately)
 
 Warning : follow precisely this order, so you don't need to dissassemble sub-assemblies down the line
 
@@ -241,13 +241,13 @@ Mount the stepper mounting plate on the other side
 
 Mount the angle bracket to the v-slot. The placement is simple : on each end,  they are next to each other, sarting at the end of the profile.
 
-## Do this two times, for both sides:
+### Do this two times, for both sides:
 
 Mount the wheels to the plate and then slide the assembled carriage.
 
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/102ed1bd-8770-4ed6-bd57-feec15d27577)
 
-# Combine x axis assembly with the rest
+## Combine x axis assembly with the rest
 Now we can mount the stepper on the x axis with the belt. Attach the belt to the plate going above the profile like this:
 
 ![signal-2024-05-30-131015](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/f2b83ba8-ecee-4d5d-bf38-fe47de7ae71f)
@@ -267,7 +267,7 @@ Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring accordin
 ![335123297-452fb32d-1a28-4367-88d5-c3750ed1e14c (1) (1) (1)](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/8b67e324-da04-4d95-9206-f31da4b23159)
 
 
-# Camera arms
+## Camera arms
 
 1. Screw in the arms to the angle brackets
 ![WhatsApp Image 2024-05-30 at 14 55 10](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/79f65ac9-f04f-4855-94b9-5f24ccd53015)
@@ -279,7 +279,7 @@ Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring accordin
 ![e45bf986-da7e-4e04-8ccc-194e948133e6](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/98a9b2f5-1321-48be-bbb9-9f7cb9f2beeb)
 
 
-# Button
+## Button
 
 1. Screw in the button housing to the board
 2. screw the button itself to the housing from below
@@ -287,7 +287,7 @@ Put the arduino+ramps+motor driver sandwich inside of it. Do the wiring accordin
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/fb54c6d5-6fcf-4a0f-96e7-083a5544322a)
 
 
-# The end
+## The end
 
 Congratulation ! At this point, you should have the full machine assembled like this:
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/29517376/8d11d0c9-d51f-4480-bb1f-2526c2b5df83)
@@ -322,6 +322,36 @@ Here are some videos that process working flawlessly:
 
 <br>
 
+# Quoridor Solver
+We implemented a greedy version of a Quoridor solver.
+The solver sees the game as a graph where:
+  - each board cell is vertex (with a board position attached to it).
+  - each possibility of movement from one cell to another is represented by an edge from that vertex to the other.
+  - each wall is represented by missing edges from 2 cells to 2 other cells.
+<!--stop list--> 
+The solver works as follows:
+  - computes the shortest path to get to the other side for both players, it uses a breadth first search algorithm to do this, as it guarantees that it will find the shortest path first.
+  - if the path of the robot is shorter than or equal to the one for the real player
+    - then the robot is in an "advantaged" position, thus moves his player piece one step forward on its shortest path
+  - otherwise it means the path of the robot is longer than the one for the real player
+  - the robot is in a "disadvantaged" position, thus it will need to place a wall on the board if it wants to win
+  - if the robot has 0 free walls to move:
+    - there is nothing it can do to win, thus moves his player piece one step forward on its shortest path
+  - else
+    - for each wall position that goes on the real player's previously calculated shortest path:
+      - checks that there is no colision with other walls on that board position
+      - calculates the shortest path for both players on that new board with that wall placed
+      - checks that there is a path to a winning cell for both players
+      - keeps state of the best "winning move" and the best "losing move"
+      - the best "winning move" is defined as the move that maximizes the distance difference between the robot's and player's new path where the robot's new path is the shorter one.
+      - the best "losing move" is defined as the move that minimizes the distance difference between the robot's and player's new path where the robot's new path is the longer one.
+    - if a "winning move" exists:
+      - it moves a free wall to the position in the best winning move
+    - else
+      - it moves a free wall to the position in the best losing move
+<!--stop list-->
+The solver seems quite robust and plays really well, but it still has some weaknesses due to the fact that it using a greedy algorithm which means that it only considers the best move for itself on this turn. <br> 
+So there is no future planning or strategy going on and it won't take into account what the real player can do in their future moves.
 # Computer Vision
 ## Pieces detection
 The playing pieces (players and walls) are recognized through color detection.
