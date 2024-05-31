@@ -304,3 +304,18 @@ This diagram shows the communication between all of our components: <br> <br>
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/c68cb262-15f6-44b7-a2b7-51a86409bb5d)
 
 The arduino will send a "end turn" message through the serial once the button pressed, then the computer will communicate with the camera to detect the current board state (placement of the player pieces and the walls), with that it will compute the best move for the bot. Finally it will the move information as the board position of the piece we want to grab, the new board position where we want to place the piece, the piece type, and optionally the orientation of the piece if it is a wall. 
+
+# Computer Vision
+## Pieces detection
+The playing pieces (players and walls) are recognized through color detection.
+(to be completed)
+
+## Game board
+The board, its cells and wall gaps are not detected as is, but rather re-created after detecting the board's corners.
+Each corner is uniquely identified by ArUco markers: they are a sort of QR codes, that can uniquely generated and identified through the use its corresponding library.
+Given the corners and the cells' number and dimensions, a grid is recreated:
+![image]([https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/c68cb262-15f6-44b7-a2b7-51a86409bb5d](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/grid_creation.png))
+You can see on the picture that the grid is purposefully offset near the top. Because the camera is not directly centered on top of the board, walls near the top will tend to look like they are higher on the board then they truly are.
+You will find more detail on aruco detection and perspective wrapping in the code /computer_vision/create_grid.py
+When creating the grid, the set of intersections between all perpendicular grid lines is stored for future use. For each intersection, we store the absolute coordinates as well as the game-system coordinates (9 units on each side, origin is bottom left)
+Then, given the absolute coordinates for the pieces centers, the code uses the set of intersections coordinates to output, for the solver to use, the game-system coordinates of each piece.
