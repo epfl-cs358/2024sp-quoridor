@@ -1,5 +1,15 @@
 # 2024sp-quoridor
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/5d83042e-d727-4137-a874-fb7ed98ebdc3)
+# Project overview
 
+This project aims to create a modified version of the physical board game called Quoridor, a strategic maze-building game, where a player competes against a computer opponent on the board. <br> 
+Quoridor is a 2 player game where each player’s piece start on opposite sides of the board, each turn the player chooses to either move their piece in any cardinal direction (up, down, left, right) or place a wall to block the other player’s path (walls cannot be moved once placed), the first player to get to the other side wins. 
+
+# Project Proposal link:
+
+https://docs.google.com/document/d/114cAhuUHxiCxB0LIXvpHFLx6ZjFtf0oyKlaDsvuiIQ8/edit?usp=sharing
+
+# Project instructions
 These instructions are structured in 2 sub-assemblies:
 - The Gripper
   
@@ -373,5 +383,7 @@ Be careful however that they can be seen entirely from the camera (black square 
 On the image above, the top markers should be small enough that walls placed at the top don't block them
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/board2.jpeg) <br>
 On the image above, the markers are too far down: the black square isn't showing entirely. <br> <br>
-And tha't it! Happy building!
 
+# Final Project
+And that's it! You have successfully built a Quoridor playing robot. 
+Now take seat and try to beat your new creation!
