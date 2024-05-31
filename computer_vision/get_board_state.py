@@ -27,7 +27,7 @@ def setup_camera():
 
     return cap
 
-def detect_pieces(cap=setup_camera()):
+def detect_pieces(cap=setup_camera(), debug = False):
 
     player1 = None # Tuple with (x, y) coordinates 
     player2 = None # Tuple with (x, y) coordinates 
@@ -55,14 +55,15 @@ def detect_pieces(cap=setup_camera()):
 
         walls = walls_1 + walls_2
 
-        print(player1)
-        print(player2)
-        print(walls)
+        if(debug):
+            print(player1)
+            print(player2)
+            print(walls)
 
         # print(f'Found {len(walls)} walls')
 
         # ---- FOR DEBUG AND VIZUALISATION PURPOSES --------
-        while True: 
+        while debug: 
             # print(player2)
             # cv2.imshow('frame', frame_piece2)
             # cv2.imshow('frame', frame_piece2)
