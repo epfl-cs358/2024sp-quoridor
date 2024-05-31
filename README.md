@@ -295,15 +295,32 @@ Congratulation ! At this point, you should have the full machine assembled like 
 You can now proceed with adjustements regarding the end switch positioning, as well as the camera angle for the webcam.
 
 # Arduino code 
-The arduino code is separated in 2 parts, one is for all movements on the board (the X, Y axis stepper motors and 3 servo motors for the gripper) and the part is for communication and interpreter which will send, receive and decode message from the computer which it will translate to valid moves on the board.
-
-## Communication and interpreter
+The arduino code is separated in 2 parts, one is for all movements on the board (the X, Y axis stepper motors and 3 servo motors for the gripper) and the part is for communication and interpreter which will send, receive and decode message from the computer which it will translate to valid moves on the board. <br> <br>
 
 The arduino will be managing communication with itself and the computer with a serial connection.
 This diagram shows the communication between all of our components: <br> <br>
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/c68cb262-15f6-44b7-a2b7-51a86409bb5d)
 
-The arduino will send a "end turn" message through the serial once the button pressed, then the computer will communicate with the camera to detect the current board state (placement of the player pieces and the walls), with that it will compute the best move for the bot. Finally it will the move information as the board position of the piece we want to grab, the new board position where we want to place the piece, the piece type, and optionally the orientation of the piece if it is a wall. 
+The arduino will send a "end turn" message through the serial once the button pressed, then the computer will communicate with the camera to detect the current board state (placement of the player pieces and the walls), with that it will compute the best move for the bot. Finally it will send the move information as the board position of the piece we want to grab, the new board position where we want to place the piece, the piece type, and optionally the orientation of the piece if it is a wall. <br> <br>
+
+To accomplish the first part the arduino will stay idle, but once the player presses the end turn button it will trigger an interrupt. This will cause the arduino to print the message "get next move", which will be sent by the serial port. <br> <br>
+Then the arduino will remain idle until it receives the move information from the computer.<br>
+There are 2 types of moves, moving a player piece or a wall piece.
+If the move is to move a player piece, then the move information will be under this form: <old_position><new_position><player> where old_position and new_position are board position for player pieces which are shown here:
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/29b26c79-ad42-4af9-a48e-afd0dd88b5b6)
+<br> 
+If the move is to move a wall piece, then the move information will be under this form: <old_position><new_position><wall><old_orientation><new_orientation> where old_orientation new_orientation are either horizontal or vertical, and old_position and new_position are board position for wall pieces which are shown here:
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/7f252fad-1904-4a52-aeec-def705e5375c)
+With all of this information the arduino knows what it has to do.<br> <br> 
+
+Now for actually placing the piece where it needs to go. <br>
+First we must move to the piece we desire to move, which we use the 2 X and Y stepper motors. Since the board was made with cells that are 4 times bigger than the gap between cells, it just takes knowing the distance in steps from the position 0 0 of the grabber to board position 00 for a player piece, and the distance in steps from a board position to a neighboring one board position to know how to move any board position for player pieces and wall pieces.<br>
+That is the hard part done, then the gripper drops down, grabs the piece, pulls it back up, rotates it if it is needed (for instance if we had to place a vertical wall), moves to the new position, drops down, releases the piece, goes back up and moves back to its origin.<br><br>
+Here are some videos that process working flawlessly:
+<video src="https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/afad0169-728d-4bf2-bb4c-040145c0d592" controls></video>
+<video src="https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/391f769e-7cd7-4f65-ab67-2949c7b72846" controls></video>
+
+<br>
 
 # Computer Vision
 ## Pieces detection
