@@ -290,3 +290,13 @@ Congratulation ! At this point, you should have the full machine assembled like 
 
 You can now proceed with adjustements regarding the end switch positioning, as well as the camera angle for the webcam.
 
+# Arduino code 
+The arduino code is separated in 2 parts, one is for all movements on the board (the X, Y axis stepper motors and 3 servo motors for the gripper) and the part is for communication and interpreter which will send, receive and decode message from the computer which it will translate to valid moves on the board.
+
+## Communication and interpreter
+
+The arduino will be managing communication with itself and the computer with a serial connection.
+This diagram shows the communication between all of our components: <br> <br>
+![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/c68cb262-15f6-44b7-a2b7-51a86409bb5d)
+
+The arduino will send a "end turn" message through the serial once the button pressed, then the computer will communicate with the camera to detect the current board state (placement of the player pieces and the walls), with that it will compute the best move for the bot. Finally it will the move information as the board position of the piece we want to grab, the new board position where we want to place the piece, the piece type, and optionally the orientation of the piece if it is a wall. 
