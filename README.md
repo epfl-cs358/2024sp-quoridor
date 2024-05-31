@@ -6,8 +6,12 @@ These instructions are structured in 2 sub-assemblies:
 - The machine
   - Main part
   - Y axis rail
+ 
+As well as a set of instructions for the Computer Vision:
+- Players and walls detection
+- Game board and coordinates building
 
-These two sub assemblies can be build in parallel and assembled at the end. The design is such that only two screws hold the gripper to the rest of the assembly, so it's quite easy to modify the gripper seperately.
+The two sub assemblies can be built in parallel and assembled at the end. The design is such that only two screws hold the gripper to the rest of the assembly, so it's quite easy to modify the gripper seperately.
 
 # Gripper
 ## Overview:
