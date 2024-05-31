@@ -385,5 +385,12 @@ On the image above, the top markers should be small enough that walls placed at 
 On the image above, the markers are too far down: the black square isn't showing entirely. <br> <br>
 
 # Final Project
-And that's it! You have successfully built a Quoridor playing robot. 
-Now take seat and try to beat your new creation!
+And that's it! <br> 
+You have successfully built a Quoridor playing robot.<br> 
+Now take seat and try to beat your new creation!<br>
+<br>
+Here you can check out some [videos](https://github.com/epfl-cs358/2024sp-quoridor/tree/main/videos) showing our project's successes (and failures) <br>
+<video src="https://github.com/epfl-cs358/2024sp-quoridor/tree/main/videos/video1.mp4" controls></video>
+<video src="https://github.com/epfl-cs358/2024sp-quoridor/tree/main/videos/video2.mp4" controls></video>
+<video src="https://github.com/epfl-cs358/2024sp-quoridor/tree/main/videos/video3.mp4" controls></video>
+<video src="https://github.com/epfl-cs358/2024sp-quoridor/tree/main/videos/video4.mp4" controls></video>
