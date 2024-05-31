@@ -10,12 +10,14 @@ SIDE_LENGTH = 9
 CELL_SIZE = 24
 WALL_SIZE = 6
 
+# basic linear algebra computations to get the vector direction and length between two points
 def compute_direction(point1, point2):
     vector = np.array(point1, dtype = float) - np.array(point2, dtype=float)
     length = np.linalg.norm(vector)
     vector /= length
     return vector, length
 
+# given two lines, compute and return the coordinates of the intersection. Each argument should be given under the form (line.x, line.x)
 def compute_intersection(line1, line2):
     x1, y1 = line1[0]
     x2, y2 = line1[1]
@@ -31,6 +33,14 @@ def compute_intersection(line1, line2):
     
     return (int(intersection_x), int(intersection_y))
 
+# this represents the step where we have the outlines of the board, and we want to create "intersection points" along the borders
+# that will later be linked to re-create the grid
+# arg image: can be omitted, used when debugging to display the computed points
+# arg border: the outline side to be computed on (left, right, top or bottom)
+# arg starting_point : from which line end-point you want to start computing the intersection points
+# arg direction : horizontal or vertical
+# arg number_units : number of intersection points to be created
+# arg ratio : size ratio between the length of a cell and of a gap
 def border_intersections(image, border, starting_point, direction, number_units, ratio):
     unit_distance = border[0][1] / number_units
     list_intersections = []
@@ -45,10 +55,13 @@ def border_intersections(image, border, starting_point, direction, number_units,
                     list_intersections.append((newPoint, (coordinate, border[1])))
                 else:
                     list_intersections.append((newPoint, (border[1], coordinate)))
-                ##cv2.circle(image, (newPoint), 5, (255, 255, 0), -1)
-                ##cv2.putText(image, str(coordinate), (newPoint), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                # cv2.circle(image, (newPoint), 5, (255, 255, 0), -1)
+                # cv2.putText(image, str(coordinate), (newPoint), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     return list_intersections
 
+# detects the aruco markers, and use their corners coordinates to warp and flatten the image perspective
+# because of the camera height, the walls and players to be detected can appear projected onto the wrong coordinates,
+# there are 3 constants in this function that can be changed to "push" the created grid so that it matches the pieces height, instead of the board
 def correct_perspective(image, image_size):
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
     aruco_param = aruco.DetectorParameters()
@@ -113,7 +126,8 @@ def correct_perspective(image, image_size):
         return dst, final_inner_corners, ids
     return image, None, None
 
-def aruco_detect(image, corners, ids):
+# use the detected aruco corners and ids to pinpoint which corners will be used to frame the grid
+def grid_corners(image, corners, ids):
     board_corners = {}
 
     if corners is not None and ids is not None and len(corners) > 0:
@@ -130,8 +144,7 @@ def aruco_detect(image, corners, ids):
             cv2.line(image, topRight, bottomRight, (0, 255, 0), 2)
             cv2.line(image, bottomRight, bottomLeft, (255, 0, 0), 2)
             cv2.line(image, bottomLeft, topLeft, (0, 255, 0), 2)
- """
-            ##cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2) """
 
             if markerID == 0:
                 board_corners["top left"] = bottomLeft
@@ -144,6 +157,8 @@ def aruco_detect(image, corners, ids):
                 
     return image, board_corners
 
+# connects the border intersections to completely create the grid. You can uncomment the lines that show the grid on the image,
+# but remember that this should only be done for debugging. Showing the grid lines on the image will render the pieces color detection uneffective.
 def create_grid(image, board_corners, side_length, cell_size, wall_size):
     intersections = []
     top_intersections = []
@@ -188,13 +203,15 @@ def create_grid(image, board_corners, side_length, cell_size, wall_size):
                 intersections.append((compute_intersection(line1, line2[0]), (line2[1], coordinate)))
                             
     return image, intersections
-        
+
+# calls all grid creation in the correct order. This function is called outside of this script    
 def game_board(frame, IMAGE_SIZE, SIDE_LENGTH, CELL_SIZE, WALL_SIZE):
     (image, corners, ids) = correct_perspective(frame, IMAGE_SIZE)
-    (image, board_corners) = aruco_detect(image, corners, ids)
+    (image, board_corners) = grid_corners(image, corners, ids)
     image, intersections = create_grid(image, board_corners, SIDE_LENGTH, CELL_SIZE, WALL_SIZE)
     return image, intersections
 
+# this function is not called in the project as a whole. It is here if you need to launch this script only for debugging reasons.
 def show_camera(index):
     cap = cv2.VideoCapture(index)
     cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('m','j','p','g'))

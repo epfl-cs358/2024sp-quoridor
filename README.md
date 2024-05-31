@@ -6,8 +6,12 @@ These instructions are structured in 2 sub-assemblies:
 - The machine
   - Main part
   - Y axis rail
+ 
+As well as a set of instructions for the Computer Vision:
+- Players and walls detection
+- Game board and coordinates building
 
-These two sub assemblies can be build in parallel and assembled at the end. The design is such that only two screws hold the gripper to the rest of the assembly, so it's quite easy to modify the gripper seperately.
+The two sub assemblies can be built in parallel and assembled at the end. The design is such that only two screws hold the gripper to the rest of the assembly, so it's quite easy to modify the gripper seperately.
 
 # Gripper
 ## Overview:
@@ -300,3 +304,27 @@ This diagram shows the communication between all of our components: <br> <br>
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/assets/125994939/c68cb262-15f6-44b7-a2b7-51a86409bb5d)
 
 The arduino will send a "end turn" message through the serial once the button pressed, then the computer will communicate with the camera to detect the current board state (placement of the player pieces and the walls), with that it will compute the best move for the bot. Finally it will the move information as the board position of the piece we want to grab, the new board position where we want to place the piece, the piece type, and optionally the orientation of the piece if it is a wall. 
+
+# Computer Vision
+## Pieces detection
+The playing pieces (players and walls) are recognized through color detection.
+(to be completed)
+
+## Game board
+The board, its cells and wall gaps are not detected as is, but rather re-created after detecting the board's corners.
+Each corner is uniquely identified by ArUco markers: they are a sort of QR codes, that can uniquely generated and identified through the use its corresponding library.
+Given the corners and the cells' number and dimensions, a grid is recreated: <br>
+![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/grid_creation.png)
+<br> <br>
+You can see on the picture that the grid is purposefully offset near the top. Because the camera is not directly centered on top of the board, walls near the top will tend to look like they are higher on the board then they truly are.
+You will find more detail on aruco detection and perspective wrapping in the code /computer_vision/create_grid.py <br>
+When creating the grid, the set of intersections between all perpendicular grid lines is stored for future use. For each intersection, we store the absolute coordinates as well as the game-system coordinates (9 units on each side, origin is bottom left) <br>
+Then, given the absolute coordinates for the pieces centers, the code uses the set of intersections coordinates to output, for the solver to use, the game-system coordinates of each piece. <br> <br>
+When sticking the ArUco markers on the board, you should be mindful that the outer corners should be well-aligned with the board's corners (PS: the markers don't need to have the same size, they should just be well-aligned). <br>
+Be careful however that they can be seen entirely from the camera (black square included). Here are corner-case examples: <br>
+![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/both_smallest_markers.jpg) <br>
+On the image above, the top markers should be small enough that walls placed at the top don't block them
+![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/board2.jpeg) <br>
+On the image above, the markers are too far down: the black square isn't showing entirely. <br> <br>
+And tha't it! Happy building!
+

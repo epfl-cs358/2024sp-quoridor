@@ -20,7 +20,7 @@ def detect_color(color, frame):
     return cv2.inRange(hsvImage, lowerLimit, upperLimit)
 
 
-def detect_walls(color, image, intersections):
+def detect_walls(color, image, intersections, vis_img):
     #Create color mask
     mask = detect_color(color, image)
 
@@ -82,13 +82,13 @@ def detect_walls(color, image, intersections):
         walls.append((cell,angle))
 
         # Draw each contour only for visualisation purposes
-        image = cv2.drawContours(image,[box],0,(0,0,255),2)
-        image = cv2.putText(image, f"({angle}, w-{width}, h-{height})", (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        # print(f"wall center is {(center[0], center[1])} for width {width} and height {height}")
+        vis_img = cv2.drawContours(vis_img,[box],0,(0,0,255),2)
+        vis_img = cv2.putText(vis_img, f"({angle}, w-{width}, h-{height})", (center[0], center[1]), 
+                              cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
-    return image, walls
+    return vis_img, walls
 
-def detect_player(color, image, intersections):
+def detect_player(color, image, intersections, vis_img):
     #Create color mask
     mask = detect_color(color, image)
     
@@ -122,12 +122,13 @@ def detect_player(color, image, intersections):
         # print(f'Cell: {cell}')
         
         # Draw each contour only for visualisation purposes
-        image = cv2.drawContours(image,[box],0,(0, 255, 0),2)
+        vis_img = cv2.drawContours(vis_img,[box],0,(0, 255, 0),2)
+        
 
-    return image, cell
+    return vis_img, cell
 
 
-
+# given the center coordinates of the detected player and all the grid intersections points, find the game-coordinates of the player
 def detect_cell_player(center, intersections):
     cx = center[0]
     cy = center[1]
@@ -139,11 +140,11 @@ def detect_cell_player(center, intersections):
         bottom_left = intersections[i+SIDE_LENGTH*2]
         bottom_right = intersections[i+1+SIDE_LENGTH*2]
         if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-            print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
-            print(f"at index {i} intersection for top left is {intersections[i]}")
+            # print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
+            # print(f"at index {i} intersection for top left is {intersections[i]}")
             return top_left[1]
 
-
+# same as detect_cell_player but for wall pieces
 def detect_cell_wall(image, center, intersections):
     cx = center[0]
     cy = center[1]
@@ -154,15 +155,15 @@ def detect_cell_wall(image, center, intersections):
         top_right = intersections[i+1]
         bottom_left = intersections[i+SIDE_LENGTH*2]
         bottom_right = intersections[i+1+SIDE_LENGTH*2]
-        """ print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  
-              top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ",
-                bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
-        print (" and object center is ", cx, " ", cy) """
+        # """ print("corners are: ", top_left[0][0], " ", top_left[0][1], ", ",  
+        #       top_right[0][0], " ", top_right[0][1], ", ", bottom_left[0][0], " ",
+        #         bottom_left[0][1], ", ", bottom_right[0][0], " ", bottom_right[0][1])
+        # print (" and object center is ", cx, " ", cy) """
         if top_left[0][0] <= cx and top_left[0][1] >= cy and top_right[0][0] >= cx and top_right[0][1] >= cy and bottom_left[0][0] <= cx and bottom_left[0][1] <= cy and bottom_right[0][0] >= cx and bottom_right[0][1] <= cy:
-            print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
-            print(f"at index {i} intersection for top left is {intersections[i]}")
-            """ cv2.circle(image, (top_left[0]), 5, (255, 255, 0), -1)
-            cv2.circle(image, (top_right[0]), 5, (255, 255, 0), -1)
-            cv2.circle(image, (bottom_left[0]), 5, (255, 255, 0), -1)
-            cv2.circle(image, (bottom_right[0]), 5, (255, 255, 0), -1) """
+            # print(f"For wall centered on {(cx, cy)} within coordinates top left {top_left}, top right {top_right}, bottom left {bottom_left} and bottom right {bottom_right}")
+            # print(f"at index {i} intersection for top left is {intersections[i]}")
+            # """ cv2.circle(image, (top_left[0]), 5, (255, 255, 0), -1)
+            # cv2.circle(image, (top_right[0]), 5, (255, 255, 0), -1)
+            # cv2.circle(image, (bottom_left[0]), 5, (255, 255, 0), -1)
+            # cv2.circle(image, (bottom_right[0]), 5, (255, 255, 0), -1) """
             return top_left[1]

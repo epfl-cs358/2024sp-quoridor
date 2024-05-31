@@ -4,6 +4,10 @@ from cv2 import aruco
 from time import sleep
 from collections import defaultdict
 
+## IMPORTANT ##
+## This entire script is not needed for a functional project.
+## This was a preliminary idea for grid_creation, where each line and column would need its own pair of identical markers.
+## The project changed to only use corners detection, but depending on your project this might still be useful
 
 ## takes coordinates of two perpendicular lines and compute the intersection
 ## returns the coordinates of the intersection

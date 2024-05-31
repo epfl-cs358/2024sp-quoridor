@@ -1,6 +1,8 @@
 from time import sleep
 import cv2
 
+# fetches the camera feed.
+# arg index : which camera to take the feed from. Most commonly, index 0 is the computer's integrated camera, index 1 for a plugged-in camera
 def show_camera(index):
     cap = cv2.VideoCapture(index)
 	# Set capture format to 'MJPG'
