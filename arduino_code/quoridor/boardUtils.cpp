@@ -7,7 +7,7 @@
 
 //RECALCULATE WHEN ADDING THE HEAD
 #define boardCornerLowerXStep -435
-#define boardCornerHigherXStep -3130
+#define boardCornerHigherXStep -3150
 #define boardCornerLowerYStep 210
 #define boardCornerHigherYStep (abs(boardCornerLowerXStep - boardCornerHigherXStep) + boardCornerLowerYStep - 55) 
 #define boardFullLengthStep (boardCornerHigherYStep - boardCornerLowerYStep)

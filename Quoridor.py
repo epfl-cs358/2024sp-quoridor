@@ -186,8 +186,13 @@ def greedy_quoridor_solver(bot_node, player_node, board_walls, debug = False):
                         
         if(best_winning_move != (free_walls[0], bot_path, player_path)):
             return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_winning_move[0][0], free_walls[0][1], best_winning_move[0][1])
+        elif(best_losing_move != (free_walls[0], bot_path, player_path)):
+            return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_losing_move[0][0], free_walls[0][1], best_losing_move[0][1]) 
+        elif(bot_path[1] == player_path[0]):
+            return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[2])
         else:
-            return "<{}><{}><WALL><{}><{}>".format(free_walls[0][0], best_losing_move[0][0], free_walls[0][1], best_losing_move[0][1])       
+            return "<{}><{}><PLAYER>".format(bot_path[0], bot_path[1])   
+           
 # ==== DON'T CHANGE BEFORE THIS LINE ==== 
 
 # ==== FREE WALL MEMORY MANAGEMENT ==== 
@@ -247,7 +252,7 @@ try:
                     print("Received from Camera: walls ", board_walls_tuple)
                     convertWallTuplesToWalls(board_walls_tuple, board_walls)
                     
-                    response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, False)
+                    response_message = greedy_quoridor_solver(bot_node, player_node, board_walls + free_wall_mem, True)
                     if response_message == None:
                         print("Someone won the game!")
                     else:    

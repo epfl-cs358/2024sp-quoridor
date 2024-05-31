@@ -42,13 +42,13 @@ int rotationSpeed = 10;
 int gripperSpeed = 10;
 
 //Starting position
-int linearStart = 100;
+int linearStart = 130;
 int rotationStart = 0;
 
 
 //End position
-int linearEnd = 0;
-int linearMid = 55;
+int linearEnd = 10;
+int linearMid = 75;
 int rotationEnd = 125;
 
 //gripper position
@@ -237,7 +237,6 @@ void playMove(MoveData move_data){
 
   moveToBoardPosition(move_data.old_position, move_data.piece_type);
   rotateTo(move_data.old_orientation);
-  //lowerClaw(move_data.piece_type);
   downMid();
   openFull();
   downFull();
@@ -245,16 +244,14 @@ void playMove(MoveData move_data){
   closeClaw(move_data.piece_type);
   upFull();
 
-  moveToBoardPosition(move_data.new_position, move_data.piece_type);
   rotateTo(move_data.new_orientation);
-  //lowerClaw(move_data.piece_type);
-  //openClaw();
+  moveToBoardPosition(move_data.new_position, move_data.piece_type);
+
   downFull();
   openFull();
   upMid();
   closeMid();
   upFull();
-  //raiseClaw(move_data.piece_type);
 
   rotateTo(HORIZONTAL);
   goToOrigin();

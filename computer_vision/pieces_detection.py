@@ -55,9 +55,9 @@ def detect_walls(color, image, intersections):
         if (height < width): 
             angle = 'H'
 
-        if(angle == 'V' and (height > 150 or height < 100 )) :
+        if(angle == 'V' and (height > 150 or height < 80 )) :
             continue
-        if (angle == 'H' and (width > 150 or width < 100 )) :
+        if (angle == 'H' and (width > 150 or width < 80 )) :
             continue
 
         if (cvAngle == 90):
