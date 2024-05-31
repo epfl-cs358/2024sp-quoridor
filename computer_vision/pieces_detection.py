@@ -128,7 +128,7 @@ def detect_player(color, image, intersections, vis_img):
     return image, cell
 
 
-
+# given the center coordinates of the detected player and all the grid intersections points, find the game-coordinates of the player
 def detect_cell_player(center, intersections):
     cx = center[0]
     cy = center[1]
@@ -144,7 +144,7 @@ def detect_cell_player(center, intersections):
             # print(f"at index {i} intersection for top left is {intersections[i]}")
             return top_left[1]
 
-
+# same as detect_cell_player but for wall pieces
 def detect_cell_wall(image, center, intersections):
     cx = center[0]
     cy = center[1]

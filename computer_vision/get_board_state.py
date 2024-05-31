@@ -8,6 +8,8 @@ from _thread import*
 
 from .pieces_detection import *
 
+## This script puts together all the Computer Vision and can be called by the solver algorithm to get the current (stateless) state of the board.
+
 IMAGE_SIZE = 500
 SIDE_LENGTH = 9
 CELL_SIZE = 24
@@ -15,8 +17,8 @@ WALL_SIZE = 6
 IMAGE_SIZE = 600
 
 
-color1 = [140,88,46] #BGR
-color2 = [85,65,173] #BGR
+color1 = [140,88,46] #BGR for blue player
+color2 = [85,65,173] #BGR for red player
 
 # color1 = [127,47,26]
 # color2 = [0,0,255]
@@ -36,7 +38,7 @@ def detect_pieces(cap=setup_camera(), debug = False):
     walls_1 = [] # List of tuples with ((x, y), orientation) (orientation = H or V) 
     walls_2 = [] # List of tuples with ((x, y), orientation) 
 
-    
+    ## the code loops until it detects both players on the board, which is the minimal requirement for an actual game state
     while player1 == None or player2 == None:
 
         ret = False

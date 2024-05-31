@@ -4,6 +4,7 @@ from cv2 import aruco
 import os
 
 
+# generates a single aruco marker
 def generate_single_marker(aruco_dict):
     marker_size = int(input("Enter the marker size: "))
     marker_id = int(input("Enter the marker ID: "))
@@ -20,6 +21,7 @@ def generate_single_marker(aruco_dict):
     print("Dimensions: ", marker_img.shape)
     cv2.waitKey(0)
 
+# takes user input to generate a given amount of markers. One marker is shown at a time, press ENTER on the image to display the next one.
 def generate_bulk_markers(aruco_dict):
     marker_size = int(input("Enter the marker size: "))
     num_markers = int(input("Enter the number of markers to generate: "))
@@ -37,7 +39,7 @@ def generate_bulk_markers(aruco_dict):
         print("Dimensions: ", marker_img.shape)
         cv2.waitKey(0)
 
-
+# launches the script and asks the user for input in order to create the correct markers.
 def main():
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
 
