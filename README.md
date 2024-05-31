@@ -319,4 +319,12 @@ Given the corners and the cells' number and dimensions, a grid is recreated: <br
 You can see on the picture that the grid is purposefully offset near the top. Because the camera is not directly centered on top of the board, walls near the top will tend to look like they are higher on the board then they truly are.
 You will find more detail on aruco detection and perspective wrapping in the code /computer_vision/create_grid.py <br>
 When creating the grid, the set of intersections between all perpendicular grid lines is stored for future use. For each intersection, we store the absolute coordinates as well as the game-system coordinates (9 units on each side, origin is bottom left) <br>
-Then, given the absolute coordinates for the pieces centers, the code uses the set of intersections coordinates to output, for the solver to use, the game-system coordinates of each piece.
+Then, given the absolute coordinates for the pieces centers, the code uses the set of intersections coordinates to output, for the solver to use, the game-system coordinates of each piece. <br> <br>
+When sticking the ArUco markers on the board, you should be mindful that the outer corners should be well-aligned with the board's corners (PS: the markers don't need to have the same size, they should just be well-aligned). <br>
+Be careful however that they can be seen entirely from the camera (black square included). Here are corner-case examples: <br>
+![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/both_smallest_markers.jpg) <br>
+On the image above, the top markers should be small enough that walls placed at the top don't block them
+![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/board2.jpeg) <br>
+On the image above, the markers are too far down: the black square isn't showing entirely. <br> <br>
+And tha't it! Happy building!
+
