@@ -354,33 +354,41 @@ The solver works as follows:
       - checks that there is a path to a winning cell for both players
       - keeps state of the best "winning move" and the best "losing move"
       - the best "winning move" is defined as the move that maximizes the distance difference between the robot's and player's new path where the robot's new path is the shorter one.
-      - the best "losing move" is defined as the move that minimizes the distance difference between the robot's and player's new path where the robot's new path is the longer one.
+      - the best "losing move" is defined as the move that minimizes the distance difference between the robot's and the player's new path where the robot's new path is the longer one.
     - if a "winning move" exists:
       - it moves a free wall to the position in the best winning move
     - else
       - it moves a free wall to the position in the best losing move
 <!--stop list-->
-The solver seems quite robust and plays really well, but it still has some weaknesses due to the fact that it using a greedy algorithm which means that it only considers the best move for itself on this turn. <br> 
-So there is no future planning or strategy going on and it won't take into account what the real player can do in their future moves.
+The solver seems quite robust and plays really well, but it still has some weaknesses due to the fact that it uses a greedy algorithm which means that it only considers the best move for itself on this turn. <br> 
+So no future planning or strategy is going on and it won't consider what the real player can do in their future moves.
+
 # Computer Vision
 ## Pieces detection
 The playing pieces (players and walls) are recognized through color detection.
-(to be completed)
+
+Using colorimetry software, we first get the BGR (Blue Green Red) color of each of the playing pieces we need to detect. This value, along with the camera feed, is then converted into the HSV (Hue, Saturation, Value) format. We now create a color mask based on the detected color with a range on the hue based on a sensitivity chosen to be 50 to account for the shadows and slight color variations.
+
+Once we obtain this mask, we use OpenCV's minAreaRect function to obtain all the possible rectangles containing objects of the same color. We then apply filters to only keep the rectangles for which the height and width would correspond to our playing pieces. This is also how we distinguish between walls and player pieces since their enclosing rectangles would have different sizes.
+
+Once we filter the rectangles of the correct sizes, we extract the centers of these rectangles which we then use to detect their coordinates on the grid. This part will be explained on the next section.
+
+Finally, for the walls, we also need to detect their orientation. We do that using the "angle" value returned by the minAreaRect function and by comparing the width and height of the rectangle. Just the angle is not enough in our case since the openCV function returns a value between 0° and 90°,it is very error-prone when thresholding between Horizontal and Vertical values (if the value is slightly above 90°, it goes back again to 1°).
 
 ## Game board
-The board, its cells and wall gaps are not detected as is, but rather re-created after detecting the board's corners.
-Each corner is uniquely identified by ArUco markers: they are a sort of QR codes, that can uniquely generated and identified through the use its corresponding library.
+The board, its cells, and wall gaps are not detected as is, but rather re-created after detecting the board's corners.
+Each corner is uniquely identified by ArUco markers: they are a sort of QR code that can be generated and identified through its corresponding library.
 Given the corners and the cells' number and dimensions, a grid is recreated: <br>
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/grid_creation.png)
 <br> <br>
-You can see on the picture that the grid is purposefully offset near the top. Because the camera is not directly centered on top of the board, walls near the top will tend to look like they are higher on the board then they truly are.
+You can see in the picture that the grid is purposefully offset near the top. Because the camera is not directly centered on top of the board, walls near the top will tend to look like they are higher on the board than they truly are.
 You will find more detail on aruco detection and perspective wrapping in the code /computer_vision/create_grid.py <br>
 When creating the grid, the set of intersections between all perpendicular grid lines is stored for future use. For each intersection, we store the absolute coordinates as well as the game-system coordinates (9 units on each side, origin is bottom left) <br>
-Then, given the absolute coordinates for the pieces centers, the code uses the set of intersections coordinates to output, for the solver to use, the game-system coordinates of each piece. <br> <br>
+Then, given the absolute coordinates for the pieces' centers, the code uses the set of intersection coordinates to output, for the solver to use, the game-system coordinates of each piece. <br> <br>
 When sticking the ArUco markers on the board, you should be mindful that the outer corners should be well-aligned with the board's corners (PS: the markers don't need to have the same size, they should just be well-aligned). <br>
 Be careful however that they can be seen entirely from the camera (black square included). Here are corner-case examples: <br>
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/both_smallest_markers.jpg) <br>
-On the image above, the top markers should be small enough that walls placed at the top don't block them
+On the image above, the top markers should be small enough that the walls placed at the top don't block them
 ![image](https://github.com/epfl-cs358/2024sp-quoridor/blob/main/computer_vision/board_test/board2.jpeg) <br>
 On the image above, the markers are too far down: the black square isn't showing entirely. <br> <br>
 
